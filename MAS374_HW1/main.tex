@@ -1,0 +1,343 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.7in]{geometry} 
+\usepackage{amsmath,amsthm,amssymb,amsfonts}
+\usepackage{enumitem}
+\usepackage{dsfont}
+\usepackage{soul}
+\usepackage{mathtools}
+\usepackage[utf8]{inputenc}
+\usepackage{multirow}
+\usepackage[colorlinks]{hyperref}
+\usepackage{cleveref}
+\usepackage{bbm}
+\usepackage{tikz-cd}
+\usepackage{adjustbox}
+\usepackage[normalem]{ulem}
+\usepackage{authblk}
+
+\renewcommand{\baselinestretch}{1.25}
+ 
+\newtheorem{lemma}{Lemma}
+\newtheorem{claim}{\sf Claim}
+\newtheorem{defi}{Definition}
+\newtheorem{thm}{Theorem}
+\newtheorem{cor}{Corollary}
+\newtheorem{prop}{Proposition}
+\newtheorem{rmk}{\it Remark}
+\newtheorem{ex}{Example}
+\newtheorem{notation}{Notation}
+\newtheorem{algorithm}{Algorithm}
+\newtheorem{assumption}{Assumption}
+\newtheorem{problem}{Problem}
+
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+  
+\begin{document}
+ 
+\title{MAS374 Optimization theory\\ Homework \#1}
+\author{20150597 Jeonghwan Lee}
+\affil{Department of Mathematical Sciences, KAIST}
+
+\maketitle
+
+\begin{problem} [\emph{Exercise 2.2} in \cite{calafiore2014optimization}]
+\label{problem1}
+\normalfont{\ \\
+\indent (1) Set $\mathbf{x}_0 := (1, 0, 0)$. Then it's clear that
+\begin{equation*}
+    \mathbf{x}_0 \in \mathcal{P} := \left\{ \mathbf{x} \in \mathbb{R}^3 : x_1 + 2 x_2 + 3 x_3 = 1 \right\} \subseteq \mathbb{R}^3.
+\end{equation*}
+In order to show that $\mathcal{P}$ is an affine space of dimension 2, it suffices to prove that $\mathcal{P} - \mathbf{x}_0 := \left\{ \mathbf{x} - \mathbf{x}_0 : \mathbf{x} \in \mathbb{R}^3 \right\}$ is a linear subspace of $\mathbb{R}^3$ of dimension 2. Note that $\mathcal{P} - \mathbf{x}_0 = \left\{ \mathbf{x} \in \mathbb{R}^3 : x_1 + 2 x_2 + 3 x_3 = 0 \right\}$. We define a function $f : \mathbb{R}^3 \rightarrow \mathbb{R}$ by
+\begin{equation*}
+    f (\mathbf{x}) = f \left( x_1, x_2, x_3 \right) := x_1 + 2 x_2 + 3 x_3 = \left( 1, 2, 3 \right)^{\top} \mathbf{x}.
+\end{equation*}
+Then it's evident that $f : \mathbb{R}^3 \rightarrow \mathbb{R}$ is a non-zero linear functional on $\mathbb{R}^3$, \emph{i.e.}, a linear functional on $\mathbb{R}^3$ with $\textsf{im}(f) = \mathbb{R}$. From $\mathcal{P} - \mathbf{x}_0 = \textsf{ker}(f)$, we obtain
+\begin{equation*}
+    \begin{split}
+        \dim_{\mathbb{R}} \left( \mathcal{P} - \mathbf{x}_0 \right) 
+        &= \dim_{\mathbb{R}} \left( \textsf{ker}(f) \right) \\
+        &\stackrel{\textnormal{(a)}}{=} \dim_{\mathbb{R}} \left( \mathbb{R}^3 \right) - \dim_{\mathbb{R}} \left( \textsf{im}(f) \right) \\
+        &= 2,
+    \end{split} 
+\end{equation*}
+as desired, where the step (a) follows from the rank-nullity theorem. This confirms that $\mathcal{P}$ is an affine space over $\mathbb{R}$ of dimension 2. \\
+\indent I would like to provide some additional remark. Suppose $\mathbf{x} = \left( x_1, x_2, x_3 \right) \in \mathcal{P} - \mathbf{x}_0$. Then one can obtain the relation $x_1 = -2 x_2 - 3 x_3$, thereby we have
+\begin{equation*}
+    \mathbf{x} = \left( x_1, x_2, x_3 \right) = \left( -2 x_2 - 3 x_3, x_2, x_3 \right) = x_2 \left( -2, 1, 0 \right) + x_3 \left( -3, 0, 1 \right).
+\end{equation*}
+So it can be easily seen that $\left\{ \left( -2, 1, 0 \right), \left( -3, 0, 1 \right) \right\}$ forms a basis for the linear subspace $\mathcal{P} - \mathbf{x}_0$ of $\mathbb{R}^3$, and this gives the representation
+\begin{equation*}
+    \mathcal{P} = \left( 1, 0, 0 \right) + \textsf{span} \left( \left\{ \left( -2, 1, 0 \right), \left( -3, 0, 1 \right) \right\} \right).
+\end{equation*}
+\indent (2) We first recall the following generalized result regarding the distance of a point from a hyperplane in the $n$-dimensional Euclidean space $\mathbb{R}^n$:
+
+\begin{lemma}
+\label{lemma1}
+Let $\mathbf{x}_0 \in \mathbb{R}^n$ and
+\begin{equation*}
+    \mathcal{H} (\mathbf{a}; b) := \left\{ \mathbf{x} \in \mathbb{R}^n : \mathbf{a}^{\top} \mathbf{x} = b \right\},
+\end{equation*}
+where $\mathbf{a} \in \mathbb{R}^n \setminus \left\{ \mathbf{0} \right\}$ and $b \in \mathbb{R}$. Then, the minimum Euclidean distance from $\mathbf{x}_0$ to the hyperplane $\mathcal{H} (\mathbf{a}; b)$ is given by
+\begin{equation}
+    \label{eqn1.1}
+    \textnormal{\textsf{dist}} \left( \mathbf{x}_0, \mathcal{H} (\mathbf{a}; b) \right) := \inf \left\{ \left\| \mathbf{x}_0 - \mathbf{x} \right\|_2 : \mathbf{x} \in \mathcal{H} (\mathbf{a}; b) \right\} = \frac{\left| b - \mathbf{a}^{\top} \mathbf{x}_0 \right|}{\left\| \mathbf{a} \right\|_2},
+\end{equation}
+and the point that achieves the minimum distance is
+\begin{equation}
+    \label{eqn1.2}
+    \argmin \left\{ \left\| \mathbf{x}_0 - \mathbf{x} \right\|_2 : \mathbf{x} \in \mathcal{H}(\mathbf{a}; b) \right\} = \left\{ \mathbf{x}_0 + \frac{b - \mathbf{a}^{\top} \mathbf{x}_0}{\left\| \mathbf{a} \right\|_{2}^2} \cdot \mathbf{a} \right\}.
+\end{equation}
+\end{lemma}
+
+\begin{proof} [Proof of Lemma \ref{lemma1}]
+Let us consider the straight line $\mathcal{L} := \left\{ \mathbf{x}_0 + t \mathbf{a} : t \in \mathbb{R} \right\}$ in $\mathbb{R}^n$, and its intersection with the hyperplane $\mathcal{H}(\mathbf{a}; b)$:
+\begin{equation*}
+    \mathcal{L} \cap \mathcal{H} (\mathbf{a}; b) = \left\{ \mathbf{x}^* \right\},
+\end{equation*}
+where $\mathbf{x}^* = \mathbf{x}_0 + t^* \mathbf{a}$ for some $t^* \in \mathbb{R}$. Here, we note that the scalar $t^* \in \mathbb{R}$ can be computed explicitly since $\mathbf{x}^* = \mathbf{x}_0 + t^* \mathbf{a} \in \mathcal{H}(\mathbf{a}; b)$: one can observe that
+\begin{equation*}
+    b = \mathbf{a}^{\top} \mathbf{x}^* = \mathbf{a}^{\top} \left( \mathbf{x}_0 + t^* \mathbf{a} \right) = \mathbf{a}^{\top} \mathbf{x}_0 + t^* \left\| \mathbf{a} \right\|_{2}^2,
+\end{equation*}
+and this yields
+\begin{equation*}
+    t^* = \frac{b - \mathbf{a}^{\top} \mathbf{x}_0}{\left\| \mathbf{a} \right\|_{2}^2}.
+\end{equation*}
+Now, we claim that $\mathbf{x}^* \in \argmin \left\{ \left\| \mathbf{x}_0 - \mathbf{x} \right\|_2 : \mathbf{x} \in \mathcal{H} (\mathbf{a}; b) \right\}$. Choose any $\mathbf{y} \in \mathcal{H}(\mathbf{a}; b)$. From
+\begin{equation*}
+    \mathbf{a}^{\top} \mathbf{y} = b = \mathbf{a}^{\top} \mathbf{x}^*,
+\end{equation*}
+we see that
+\begin{equation}
+    \label{eqn1.3}
+    0 = \mathbf{a}^{\top} \left( \mathbf{x}^* - \mathbf{y} \right) \quad \Rightarrow \quad \mathbf{x}^* - \mathbf{y} \in \left( \left\{ \mathbf{a} \right\} \right)^{\perp}.
+\end{equation}
+Since $\mathbf{x}_0 - \mathbf{x}^* = - t^* \mathbf{a} \in \textsf{span} \left( \left\{ \mathbf{a} \right\} \right)$, it follows from \eqref{eqn1.3} that
+\begin{equation}
+    \label{eqn1.4}
+    \left\langle \mathbf{x}_0 - \mathbf{x}^*, \mathbf{x}^* - \mathbf{y} \right\rangle = \left( \mathbf{x}_0 - \mathbf{x}^* \right)^{\top} \left( \mathbf{x}^* - \mathbf{y} \right) = 0. 
+\end{equation}
+Hence, it can be shown that
+\begin{equation}
+    \label{eqn1.5}
+    \begin{split}
+        \left\| \mathbf{x}_0 - \mathbf{y} \right\|_{2}^2 &=
+        \left\| \left( \mathbf{x}_0 - \mathbf{x}^* \right) + \left( \mathbf{x}^* - \mathbf{y} \right) \right\|_{2}^2 \\
+        &= \left\| \mathbf{x}_0 - \mathbf{x}^* \right\|_{2}^2 + \left\| \mathbf{x}^* - \mathbf{y} \right\|_{2}^2 + 2 \left\langle \mathbf{x}_0 - \mathbf{x}^*, \mathbf{x}^* - \mathbf{y} \right\rangle \\
+        &\stackrel{\textnormal{(b)}}{=} \left\| \mathbf{x}_0 - \mathbf{x}^* \right\|_{2}^2 + \left\| \mathbf{x}^* - \mathbf{y} \right\|_{2}^2 \\
+        &\geq \left\| \mathbf{x}_0 - \mathbf{x}^* \right\|_{2}^2,
+    \end{split}
+\end{equation}
+where the step (b) makes use of the equation \eqref{eqn1.4}. Note that the equality in \eqref{eqn1.5} holds if and only if $\mathbf{y} = \mathbf{x}^*$. Therefore we may conclude that
+\begin{equation*}
+    \mathbf{x}^* = \mathbf{x}_0 + t^* \mathbf{a} \in \argmin \left\{ \left\| \mathbf{x}_0 - \mathbf{x} \right\|_2 : \mathbf{x} \in \mathcal{H} (\mathbf{a}; b) \right\},
+\end{equation*}
+and as a result, we obtain
+\begin{equation*}
+    \begin{split}
+        \textnormal{\textsf{dist}} \left( \mathbf{x}_0, \mathcal{H} (\mathbf{a}; b) \right) &= \inf \left\{ \left\| \mathbf{x}_0 - \mathbf{x} \right\|_2 : \mathbf{x} \in \mathcal{H} (\mathbf{a}; b) \right\} \\
+        &= \left\| \mathbf{x}_0 - \mathbf{x}^* \right\|_2 \\
+        &= \left| t^* \right| \left\| \mathbf{a} \right\|_2 \\
+        &= \frac{\left| b - \mathbf{a}^{\top} \mathbf{x}_0 \right|}{\left\| \mathbf{a} \right\|_2},
+    \end{split}
+\end{equation*}
+as desired.
+
+\end{proof}
+
+\indent Finally, we compute the minimum Euclidean distance from $\mathbf{0} \in \mathbb{R}^3$ to $\mathcal{P}$ and the point that attains the minimum distance by applying Lemma \ref{lemma1} for $n=3$, $\mathbf{x}_0 = \mathbf{0} \in \mathbb{R}^3$, $\mathbf{a} = \left( 1, 2, 3 \right) \in \mathbb{R}^3$, and $b = 1 \in \mathbb{R}$: the minimum Euclidean distance from $\mathbf{0} \in \mathbb{R}^3$ to $\mathcal{P}$ is given by
+\begin{equation*}
+\textsf{dist} \left( \mathbf{0}, \mathcal{P} \right) = \frac{\left| b - \mathbf{a}^{\top} \mathbf{x}_0 \right|}{\left\| \mathbf{a} \right\|_2} = \frac{1}{\sqrt{14}},
+\end{equation*}
+and the point that achieves the minimum distance is
+\begin{equation*}
+    \mathbf{x}^* = \mathbf{x}_0 + \frac{b - \mathbf{a}^{\top} \mathbf{x}_0}{\left\| \mathbf{a} \right\|_{2}^2} \cdot \mathbf{a} = \left( \frac{1}{14}, \frac{1}{7}, \frac{3}{14} \right).
+\end{equation*}
+
+}
+\end{problem}
+
+\begin{problem} [\emph{Exercise 2.7} in \cite{calafiore2014optimization}]
+\label{problem2}
+\normalfont{\ \\
+\indent We will prove that for any $p, q \in \left[ 1, +\infty \right]$ with $\frac{1}{p} + \frac{1}{q} = 1$, it holds that
+\begin{equation}
+    \label{eqn2.1}
+    \left| \mathbf{x}^{\top} \mathbf{y} \right| \stackrel{\textnormal{(a)}}{\leq} \sum_{k=1}^{n} \left| x_k y_k \right| 
+    \stackrel{\textnormal{(b)}}{\leq} \left\| \mathbf{x} \right\|_{p} \left\| \mathbf{y} \right\|_{q},\ \forall \mathbf{x}, \mathbf{y} \in \mathbb{R}^n.
+\end{equation}
+The cases for which either $\mathbf{x} = \mathbf{0}$ or $\mathbf{y} = \mathbf{0}$ are trivial. So from now on, we may assume that $\mathbf{x}, \mathbf{y} \in \mathbb{R}^n \setminus \left\{ \mathbf{0} \right\}$. The first inequality (a) immediately follows from the triangle inequality. \\ [10pt]
+\indent \emph{Case \#1.} $(p, q) = (1, +\infty)$: The second inequality (b) holds since
+\begin{equation*}
+    \sum_{k=1}^{n} \left| x_k y_k \right| \leq \sum_{k=1}^{n} \left| x_k \right| \left\| \mathbf{y} \right\|_{\infty} = \left\| \mathbf{x} \right\|_1 \left\| \mathbf{y} \right\|_{\infty}.
+\end{equation*}
+\indent \emph{Case \#2.} $(p, q) = (+\infty, 1)$: The second inequality (b) follows because
+\begin{equation*}
+    \sum_{k=1}^{n} \left| x_k y_k \right| \leq \sum_{k=1}^{n} \left\| \mathbf{x} \right\|_{\infty} \left| y_k \right| = \left\| \mathbf{x} \right\|_{\infty} \left\| \mathbf{y} \right\|_{1}.
+\end{equation*}
+\indent \emph{Case \#3.} $p, q \in \left( 1, +\infty \right)$: Consider the normalized vectors $\mathbf{u} := \frac{\mathbf{x}}{\left\| \mathbf{x} \right\|_p}$ and $\mathbf{v} := \frac{\mathbf{y}}{\left\| \mathbf{y} \right\|_q}$. Then we have
+\begin{equation}
+    \label{eqn2.2}
+    \left\| \mathbf{u} \right\|_p = \left\| \mathbf{v} \right\|_q = 1,
+\end{equation}
+and
+\begin{equation}
+    \label{eqn2.3}
+    \begin{split}
+        \sum_{k=1}^{n} \left| x_k y_k \right| &= \left\| \mathbf{x} \right\|_p \left\| \mathbf{y} \right\|_q \left( \sum_{k=1}^{n} \left| u_k v_k \right| \right) \\
+        &\stackrel{\textnormal{(c)}}{\leq} \left\| \mathbf{x} \right\|_p \left\| \mathbf{y} \right\|_q \left\{ \sum_{k=1}^{n} \left( \frac{1}{p} \left| u_k \right|^p + \frac{1}{q} \left| v_k \right|^q \right) \right\} \\
+        &= \left\| \mathbf{x} \right\|_p \left\| \mathbf{y} \right\|_q \left( \frac{1}{p} \left\| \mathbf{u} \right\|_p + \frac{1}{q} \left\| \mathbf{v} \right\|_q \right) \\
+        &\stackrel{\textnormal{(d)}}{=} \left\| \mathbf{x} \right\|_p \left\| \mathbf{y} \right\|_q,
+    \end{split}
+\end{equation}
+where the step (c) follows from the Young's inequality: if $p, q \in \left( 1, +\infty \right)$ and $a, b \in \left[ 0, +\infty \right)$, then
+\begin{equation}
+    \label{eqn2.4}
+    ab \leq \frac{a^p}{p} + \frac{b^q}{q},
+\end{equation}
+and the step (d) is due to the fact \eqref{eqn2.2} together with $\frac{1}{p} + \frac{1}{q} = 1$. We finish the proof by establishing the Young's inequality \eqref{eqn2.4}. From the concavity of the function $x \in \left( 0, +\infty \right) \mapsto \log x \in \mathbb{R}$, we obtain
+\begin{equation*}
+    \log (ab) = \frac{1}{p} \log \left( a^p \right) + \frac{1}{q} \log \left( b^q \right) \leq \log \left( \frac{a^p}{p} + \frac{b^q}{q} \right),
+\end{equation*}
+and the non-decreasing property of the function $x \in \left( 0, +\infty \right) \mapsto \log x \in \mathbb{R}$ yields the desired result.
+}
+\end{problem}
+
+\begin{problem} [\emph{Exercise 3.1} in \cite{calafiore2014optimization}]
+\label{problem3}
+\normalfont{\ \\
+\indent (\romannumeral 1) We first recall that for each $(i, j) \in [k] \times [n]$,
+\begin{equation}
+    \label{eqn3.1}
+    \left[ \mathcal{J}_h (\mathbf{x}) \right]_{ij} = D_j h_i (\mathbf{x}) :=
+    \frac{\partial h_i}{\partial x_j}(\mathbf{x}),
+\end{equation}
+where $\mathcal{J}_h (\mathbf{x}) \in \mathbb{R}^{k \times n}$ is the Jacobian matrix of $h : \mathbb{R}^n \times \mathbb{R}^k$ at $\mathbf{x} \in \mathbb{R}^n$. Since
+\begin{equation*}
+    h_i (\mathbf{x}) = \left( f_i \circ g \right)(\mathbf{x}) = f_i \left( g_1 (\mathbf{x}), g_2 (\mathbf{x}), \cdots, g_m (\mathbf{x}) \right),\ \forall \mathbf{x} \in \mathbb{R}^n,
+\end{equation*}
+the chain rule gives
+\begin{equation}
+    \label{eqn3.2}
+    \begin{split}
+        \frac{\partial h_i}{\partial x_j}(\mathbf{x}) &=
+        \sum_{k=1}^{m} D_k f_i \left( g_1 (\mathbf{x}), g_2 (\mathbf{x}), \cdots, g_m (\mathbf{x}) \right) \cdot D_j g_k (\mathbf{x}) \\
+        &= \sum_{k=1}^{m} \left[ \mathcal{J}_f \left( g (\mathbf{x}) \right) \right]_{ik} \left[ \mathcal{J}_g (\mathbf{x}) \right]_{kj} \\
+        &= \left[ \mathcal{J}_f \left( g (\mathbf{x}) \right) \cdot \mathcal{J}_g (\mathbf{x}) \right]_{ij}.
+    \end{split}
+\end{equation}
+Taking two pieces \eqref{eqn3.1} and \eqref{eqn3.2} collectively yields the desired result, known as the \emph{general chain rule}:
+\begin{equation}
+    \label{eqn3.3}
+    \mathcal{J}_h (\mathbf{x}) = \mathcal{J}_f \left( g (\mathbf{x}) \right) \cdot \mathcal{J}_g (\mathbf{x}),\ \forall \mathbf{x} \in \mathbb{R}^n.
+\end{equation}
+\indent (\romannumeral 2) By (\romannumeral 1), it suffices to show that
+\begin{equation}
+    \label{eqn3.3}
+    \mathcal{J}_g (\mathbf{x}) = \mathbf{A} = \left[ A_{ij} \right]_{(i, j) \in [m] \times [n]} \in \mathbb{R}^{m \times n},\ \forall \mathbf{x} \in \mathbb{R}^n.
+\end{equation}
+From
+\begin{equation*}
+    \begin{split}
+        g(\mathbf{x}) &= \left( g_1 (\mathbf{x}), g_2 (\mathbf{x}), \cdots, g_m (\mathbf{x}) \right) \\
+        &= \mathbf{A} \mathbf{x} + \mathbf{b} \\
+        &= \left( \sum_{k=1}^{n} A_{1k} x_k + b_1, \sum_{k=1}^{n} A_{2k} x_k + b_2, \cdots, \sum_{k=1}^{n} A_{mk} x_k + b_m \right),
+    \end{split}
+\end{equation*}
+we have for every $(i, j) \in [m] \times [n]$,
+\begin{equation*}
+    \left[ \mathcal{J}_g (\mathbf{x}) \right]_{ij} 
+    = D_j g_i (\mathbf{x}) \\
+    = \frac{\partial}{\partial x_j} \left( \sum_{k=1}^{n} A_{ik} x_k + b_i \right) \\
+    = A_{ij},
+\end{equation*}
+which implies \eqref{eqn3.3} as desired. \\ [10pt]
+\indent (\romannumeral 3) For any real-valued differentiable function $\varphi : \mathbb{R}^n \rightarrow \mathbb{R}$ and $\mathbf{x} \in \mathbb{R}^n$,
+\begin{equation*}
+    \nabla \varphi (\mathbf{x}) = \mathcal{J}_{\varphi}(\mathbf{x})^{\top} 
+    = 
+    \begin{bmatrix}
+        D_1 \varphi (\mathbf{x}) & D_2 \varphi (\mathbf{x}) & \cdots
+        & D_n \varphi (\mathbf{x})
+    \end{bmatrix}^{\top}
+    \in \mathbb{R}^{n \times 1}.
+\end{equation*}
+Consider the affine function $g : \mathbb{R}^n \rightarrow \mathbb{R}^m$ defined by $g(\mathbf{x}) := \mathbf{A} \mathbf{x} + \mathbf{b}$, where $\mathbf{A} \in \mathbb{R}^{m \times n}$ and $\mathbf{b} \in \mathbb{R}^{m \times 1}$, and a differentiable function $f : \mathbb{R}^m \rightarrow \mathbb{R}$. Then by (\romannumeral 2), we have
+\begin{equation}
+    \label{eqn3.4}
+    \begin{split}
+        \nabla h(\mathbf{x}) = \mathcal{J}_h (\mathbf{x})^{\top}
+        = \left\{ \mathcal{J}_f (g(\mathbf{x}) \cdot \mathbf{A} \right\}^{\top}
+        = \mathbf{A}^{\top} \mathcal{J}_f (g(\mathbf{x})^{\top} 
+        = \mathbf{A}^{\top} \nabla f \left( g (\mathbf{x}) \right),\ \forall \mathbf{x} \in \mathbb{R}^n.
+    \end{split}
+\end{equation}
+\indent Finally, we evaluate the Hessian $\nabla^2 h(\mathbf{x}) = \left[ \frac{\partial^2 h}{\partial x_j \partial x_i} (\mathbf{x}) \right]_{(i, j) \in [n] \times [n]} \in \mathbb{R}^{n \times n}$ of $h : \mathbb{R}^n \rightarrow \mathbb{R}$. Hereafter, we assume that $f : \mathbb{R}^m \rightarrow \mathbb{R}$ is a twice differentiable function. The $(i, j)$-th entry of the Hessian $\nabla^2 h(\mathbf{x})$ of the function $h : \mathbb{R}^n \rightarrow \mathbb{R}$ at $\mathbf{x} \in \mathbb{R}^n$ is given by
+\begin{equation}
+    \label{eqn3.5}
+    \begin{split}
+        \frac{\partial^2 h}{\partial x_j \partial x_i} (\mathbf{x})
+        &= \frac{\partial}{\partial x_j} \left( \frac{\partial h}{\partial x_i} (\mathbf{x}) \right) \\
+        &\stackrel{\textnormal{(a)}}{=} \frac{\partial}{\partial x_j} \left( \sum_{k=1}^{m} A_{ki} \left( D_k f \right) (g(\mathbf{x})) \right) \\
+        &= \sum_{k=1}^{m} A_{ki} \cdot \frac{\partial}{\partial x_j} \left( D_k f \right) (g(\mathbf{x})) \\
+        &\stackrel{\textnormal{(b)}}{=} \sum_{k=1}^{m} A_{ki} \cdot \left\{ \sum_{l=1}^{m} \left( D_l D_k f \right)(g (\mathbf{x})) \cdot D_j g_l(\mathbf{x}) \right\} \\
+        &\stackrel{\textnormal{(c)}}{=} \sum_{k=1}^{m} \sum_{l=1}^{m} A_{ki} \left[ \left( \nabla^2 f \right) (g(\mathbf{x})) \right]_{kl} A_{lj} \\
+        &= \left[ \mathbf{A}^{\top} \left( \nabla^2 f \right) (g(\mathbf{x})) \mathbf{A} \right]_{ij},
+    \end{split}
+\end{equation}
+where the steps (a)--(c) hold due to the following reasons:
+\begin{enumerate} [label=(\alph*)]
+    \item the equation \eqref{eqn3.4};
+    \item the general chain rule (\romannumeral 1);
+    \item the equation \eqref{eqn3.3}.
+\end{enumerate}
+The equation \eqref{eqn3.5} completes the proof of the fact $\nabla^2 h (\mathbf{x}) = \mathbf{A}^{\top} \left( \nabla^2 f \right) (g(\mathbf{x})) \mathbf{A}$, $\forall \mathbf{x} \in \mathbb{R}^n$.
+}
+\end{problem}
+
+\begin{problem} [\emph{Exercise 3.7} in \cite{calafiore2014optimization}]
+\label{problem4}
+\normalfont{\ \\
+\indent (\romannumeral 1) It's clear from the definition of null-space that
+\begin{equation}
+    \label{eqn4.1}
+    \mathcal{N} \left( \mathbf{A} \right) \leq \mathcal{N} \left( \mathbf{A}^{\top} \mathbf{A} \right).
+\end{equation}
+Take any $\mathbf{x} \in \mathcal{N} \left( \mathbf{A}^{\top} \mathbf{A} \right)$. Then we have
+\begin{equation*}
+    0 = \mathbf{x}^{\top} \cdot \mathbf{0} = \mathbf{x}^{\top} \left( \mathbf{A}^{\top} \mathbf{A} \mathbf{x} \right) = \left( \mathbf{A} \mathbf{x} \right)^{\top} \left( \mathbf{A} \mathbf{x} \right) 
+    = \left\| \mathbf{A} \mathbf{x} \right\|_{2}^2,
+\end{equation*}
+and this implies $\mathbf{A} \mathbf{x} = \mathbf{0} \in \mathbb{R}^m$. Combining this conclusion together with the fact \eqref{eqn4.1}, we arrive at
+\begin{equation}
+    \label{eqn4.2}
+    \mathcal{N} \left( \mathbf{A} \right) = \mathcal{N} \left( \mathbf{A}^{\top} \mathbf{A} \right).
+\end{equation}
+\indent (\romannumeral 2) To begin with, one can recognize that for any $\mathbf{M} \in \mathbb{R}^{m \times n}$,
+\begin{equation}
+    \label{eqn4.3}
+    \begin{split}
+        \mathcal{R} \left( \mathbf{M}^{\top} \right)^{\perp}
+        &= \left\{ \mathbf{x} \in \mathbb{R}^n : \left\langle \mathbf{x}, \mathbf{M}^{\top} \mathbf{y} \right\rangle = 0,\ \forall \mathbf{y} \in \mathbb{R}^m \right\} \\
+        &= \left\{ \mathbf{x} \in \mathbb{R}^n : \left\langle \mathbf{M} \mathbf{x}, \mathbf{y} \right\rangle = 0,\ \forall \mathbf{y} \in \mathbb{R}^m \right\} \\
+        &= \left\{ \mathbf{x} \in \mathbb{R}^n : \mathbf{M} \mathbf{x} = \mathbf{0} \right\} \\
+        &= \mathcal{N} \left( \mathbf{M} \right).
+    \end{split}
+\end{equation}
+Therefore, we find that
+\begin{equation*}
+    \mathcal{R} \left( \mathbf{A}^{\top} \right)
+    \stackrel{\textnormal{(a)}}{=} \mathcal{N} \left( \mathbf{A} \right)^{\perp}
+    \stackrel{\textnormal{(b)}}{=} \mathcal{N} \left( \mathbf{A}^{\top} \mathbf{A} \right)^{\perp}
+    \stackrel{\textnormal{(c)}}{=} \left\{ \mathcal{R} \left( \left( \mathbf{A}^{\top} \mathbf{A} \right)^{\top} \right)^{\perp} \right\}^{\perp} = \mathcal{R} \left( \mathbf{A}^{\top} \mathbf{A} \right),
+\end{equation*}
+where the step (a) and (c) follow from the fact \eqref{eqn4.3}, and the step (b) is owing to the fact \eqref{eqn4.2}. This completes the proof of desired results.
+}
+\end{problem}
+
+\newpage
+
+\bibliographystyle{plain}
+\bibliography{main.bib}
+
+\end{document}
