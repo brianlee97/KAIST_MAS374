@@ -1,0 +1,309 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.7in]{geometry} 
+\usepackage{amsmath,amsthm,amssymb,amsfonts}
+\usepackage{enumitem}
+\usepackage{dsfont}
+\usepackage{soul}
+\usepackage{mathtools}
+\usepackage[utf8]{inputenc}
+\usepackage{multirow}
+\usepackage[colorlinks]{hyperref}
+\usepackage{cleveref}
+\usepackage{bbm}
+\usepackage{tikz-cd}
+\usepackage{adjustbox}
+\usepackage[normalem]{ulem}
+\usepackage{authblk}
+
+\renewcommand{\baselinestretch}{1.25}
+ 
+\newtheorem{lemma}{Lemma}
+\newtheorem{claim}{\sf Claim}
+\newtheorem{defi}{Definition}
+\newtheorem{thm}{Theorem}
+\newtheorem{cor}{Corollary}
+\newtheorem{prop}{Proposition}
+\newtheorem{rmk}{\it Remark}
+\newtheorem{ex}{Example}
+\newtheorem{notation}{Notation}
+\newtheorem{algorithm}{Algorithm}
+\newtheorem{assumption}{Assumption}
+\newtheorem{problem}{Problem}
+
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+  
+\begin{document}
+ 
+\title{MAS374 Optimization theory\\ Homework \#2}
+\author{20150597 Jeonghwan Lee}
+\affil{Department of Mathematical Sciences, KAIST}
+
+\maketitle
+
+\begin{problem} [\emph{Exercise 4.4} in \cite{calafiore2014optimization}]
+\label{problem1}
+\normalfont{\ \\
+\indent (1) Given any linear subspace $\mathcal{S}$ of $\mathbb{R}^n$, let $\mathcal{P}_{\mathcal{S}}(\cdot) : \mathbb{R}^n \rightarrow \mathcal{S}$ denote the orthogonal projection from $\mathbb{R}^n$ onto $\mathcal{S}$. From the definition of $t_i (\mathbf{w})$, it's clear that
+\begin{equation}
+    \label{eqn1.1}
+    \mathcal{P}_{\mathcal{L}}(\mathbf{w}) \left( \mathbf{x}^{(i)} \right) = t_i (\mathbf{w}) \cdot \mathbf{w},\ \forall i \in [m] \textnormal{ and } \mathbf{w} \in \mathbb{R}^n \textnormal{ such that } \left\| \mathbf{w} \right\|_2 = 1.
+\end{equation}
+Due to the projection theorem (\emph{Theorem 2.2} in \cite{calafiore2014optimization}), we find that for every $i \in [m]$,
+\begin{equation}
+    \label{eqn1.2}
+    \mathbf{x}^{(i)} - \mathcal{P}_{\mathcal{L}}(\mathbf{w}) \left( \mathbf{x}^{(i)} \right) \perp \mathcal{L}(\mathbf{w}) \quad \Rightarrow
+    \quad \mathbf{w}^{\top} \left\{ \mathbf{x}^{(i)} - \mathcal{P}_{\mathcal{L}}(\mathbf{w}) \left( \mathbf{x}^{(i)} \right) \right\} = 0.
+\end{equation}
+Putting \eqref{eqn1.1} into \eqref{eqn1.2}, we now have
+\begin{equation*}
+    \begin{split}
+        0 &= \mathbf{w}^{\top} \left\{ \mathbf{x}^{(i)} - \mathcal{P}_{\mathcal{L}}(\mathbf{w}) \left( \mathbf{x}^{(i)} \right) \right\} \\
+        &= \mathbf{w}^{\top} \left\{ \mathbf{x}^{(i)} - t_i (\mathbf{w}) \cdot \mathbf{w} \right\} \\
+        &= \mathbf{w}^{\top} \mathbf{x}^{(i)} - t_i (\mathbf{w}) \left\| \mathbf{w} \right\|_{2}^2 \\
+        &\stackrel{\textnormal{(a)}} = \mathbf{w}^{\top} \mathbf{x}^{(i)} - t_i (\mathbf{w}),
+    \end{split}
+\end{equation*}
+where the step (a) follows from the fact $\left\| \mathbf{w} \right\|_2 = 1$, and thus $t_i (\mathbf{w}) = \mathbf{w}^{\top} \mathbf{x}^{(i)}$ for every $i \in [m]$. \\ [10pt]
+\indent (2) It's straightforward from (1) that
+\begin{equation*}
+    \begin{split}
+        \hat{t}(\mathbf{w}) &= \frac{1}{m} \sum_{i=1}^{m} t_i(\mathbf{w}) \\
+        &= \frac{1}{m} \sum_{i=1}^{m} \mathbf{w}^{\top} \mathbf{x}^{(i)} \\
+        &= \mathbf{w}^{\top} \left( \frac{1}{m} \sum_{i=1}^{m} \mathbf{x}^{(i)} \right) \\
+        &= \mathbf{w}^{\top} \hat{\mathbf{x}},
+    \end{split}
+\end{equation*}
+where $\hat{\mathbf{x}} := \frac{1}{m} \sum_{i=1}^{m} \mathbf{x}^{(i)}$ is the sample mean of the data points $\left\{ \mathbf{x}^{(i)} : i \in [m] \right\}$. The current problem assumes that the function $\hat{t} (\cdot) : \mathbb{S}^{n-1} \rightarrow \mathbb{R}$ is a constant function, where $\mathbb{S}^{n-1}$ refers to the $(n-1)$-dimensional unit sphere. If $\hat{\mathbf{x}} \neq \mathbf{0}$, then we have
+\begin{equation*}
+    \hat{t} \left( - \frac{\hat{\mathbf{x}}}{\left\| \hat{\mathbf{x}} \right\|_2} \right) = - \left\| \hat{\mathbf{x}} \right\|_2 \neq
+    \left\| \hat{\mathbf{x}} \right\|_2 = \hat{t} \left( \frac{\hat{\mathbf{x}}}{\left\| \hat{\mathbf{x}} \right\|_2} \right),
+\end{equation*}
+which contradicts that assumption. So one can conclude that $\hat{\mathbf{x}} = \mathbf{0}$. \\ [10pt]
+\indent (3) To begin with, let us recall the definition of the sample covariance matrix $\mathbf{\Sigma} \in \mathcal{S}^n$, where $\mathcal{S}^n$ denotes the set of all $n \times n$ real symmetric matrices:
+\begin{equation*}
+    \mathbf{\Sigma} := \frac{1}{m} \sum_{i=1}^{m} \left( \mathbf{x}^{(i)} - \hat{\mathbf{x}} \right) \left( \mathbf{x}^{(i)} - \hat{\mathbf{x}} \right)^{\top}.
+\end{equation*}
+By the spectral theorem, the $n \times n$ real symmetric matrix $\mathbf{\Sigma}$ admits the spectral decomposition
+\begin{equation}
+    \label{eqn1.3}
+    \mathbf{\Sigma} = \mathbf{U} \mathbf{D} \mathbf{U}^{\top},
+\end{equation}
+where $\mathbf{U} \in \mathcal{O}(n)$ and $\mathbf{D} := \textsf{diag} \left( \lambda_1 (\mathbf{\Sigma}), \lambda_2 (\mathbf{\Sigma}), \cdots, \lambda_n (\mathbf{\Sigma}) \right) \in \mathbb{R}^{n \times n}$. Here, $\mathcal{O}(n)$ refers to the orthogonal group in dimension $n$. Now we observe that for any $\mathbf{w} \in \mathbb{S}^{n-1}$,
+\begin{equation*}
+    \begin{split}
+        \mathbf{w}^{\top} \mathbf{\Sigma} \mathbf{w}
+        &= \frac{1}{m} \sum_{i=1}^{m} \left\{ \mathbf{w}^{\top} \left( \mathbf{x}^{(i)} - \hat{\mathbf{x}} \right) \right\}^2 \\
+        &\stackrel{\textnormal{(b)}}{=} \frac{1}{m} \sum_{i=1}^{m} \left\{ \mathbf{w}^{\top} \mathbf{x}^{(i)} \right\}^2 \\
+        &\stackrel{\textnormal{(c)}}{=} \frac{1}{m} \sum_{i=1}^{m} \left\{ t_i (\mathbf{w}) \right\}^2 \\
+        &= \sigma^2 (\omega),
+    \end{split}
+\end{equation*}
+where the step (b) and the step (c) follows from part (2) and part (1), respectively. Since the current problem assumes that the function $\sigma^2 (\cdot) : \mathbb{S}^{n-1} \rightarrow \mathbb{R}$ is constant, one can conclude that the quadratic form
+\begin{equation*}
+    \mathbf{w} \in \mathbb{S}^{n-1} \mapsto \mathbf{w}^{\top} \mathbf{\Sigma} \mathbf{w} \in \mathbb{R}
+\end{equation*}
+is also a constant function. This implies
+\begin{equation}
+    \label{eqn1.5}
+    \lambda_1 (\mathbf{\Sigma}) = \lambda_2 (\mathbf{\Sigma}) =
+    \cdots = \lambda_n (\mathbf{\Sigma}) = \sigma^2.
+\end{equation}
+Taking two pieces \eqref{eqn1.3} and \eqref{eqn1.5} collectively, we establish
+\begin{equation*}
+    \mathbf{\Sigma} = \mathbf{U} \left( \sigma^2 \cdot \mathbf{I}_n \right) \mathbf{U}^{\top} 
+    \stackrel{\textnormal{(d)}}{=} \sigma^2 \cdot \mathbf{I}_n,
+\end{equation*}
+where the step (d) holds since $\mathbf{U}$ is an $n \times n$ orthogonal matrix.
+}
+\end{problem}
+
+\begin{problem} [\emph{Exercise 5.1} in \cite{calafiore2014optimization}]
+\label{problem2}
+\normalfont{\ \\
+\indent (1) It's straightforward to realize that all row vectors as well as column vectors of $\mathbf{A}$ are orthonormal. Moreover, it's clear that
+\begin{equation*}
+    \mathbf{A}^{\top} \mathbf{A} = \mathbf{A} \mathbf{A}^{\top} = \mathbf{I}_3,
+\end{equation*}
+thereby $\mathbf{A} \in \mathcal{O}(3)$. \\ [10pt]
+\indent (2) Since $\mathbf{A}$ is a $3 \times 3$ real symmetric matrix, it admits the spectral decomposition which plays a role as a singular value decomposition (\textsf{SVD} for brevity) of $\mathbf{A}$. So it suffices to find its spectral decomposition. To this end, we first compute the eigenvalues of $\mathbf{A}$. The characteristic polynomial of $\mathbf{A}$ is given by
+\begin{equation*}
+    \textsf{ch}_{\mathbf{A}}(x) := \textsf{det} \left( x \mathbf{I}_3 - \mathbf{A} \right) = (x-1)(x+1)^2.
+\end{equation*}
+Therefore, we obtain
+\begin{equation*}
+    \lambda_1 (\mathbf{A}) = 1 \quad \textnormal{and} \quad
+    \lambda_2 (\mathbf{A}) = \lambda_3 (\mathbf{A}) = -1.
+\end{equation*}
+Involving some straightforward computations, one can reveal that
+\begin{equation}
+    \label{eqn2.1}
+    \mathcal{E}(1) := \mathcal{N} \left( \mathbf{A} - \mathbf{I}_3 \right) = \textsf{span} \left\{ 
+    \begin{bmatrix}
+        1 \\ 1 \\ 1
+    \end{bmatrix}
+    \right\}
+    \quad \textnormal{and} \quad
+    \mathcal{E}(-1) := \mathcal{N} \left( \mathbf{A} - \mathbf{I}_3 \right) = \left\{ \mathbf{x} \in \mathbb{R}^3 : \mathbf{1}_{3}^{\top} \mathbf{x} = 0 \right\},
+\end{equation}
+where $\mathbf{1}_3 := \begin{bmatrix} 1 & 1 & 1 \end{bmatrix}^{\top}$. Here, $\mathcal{E}(1)$ and $\mathcal{E}(-1)$ stand for the eigen-spaces of $\mathbf{A}$ associated to its eigenvalues $1$ and $-1$, respectively. It's clear that $\mathcal{E}(1) \perp \mathcal{E}(-1)$. Consider
+\begin{equation*}
+    \mathbf{v}_1 := \mathbf{e}_1 + \mathbf{e}_2 + \mathbf{e}_3, \quad
+    \mathbf{v}_2 := \mathbf{e}_1 - \mathbf{e}_3, \quad \textnormal{and} \quad \mathbf{v}_3 := \mathbf{e}_2 - \mathbf{e}_3,
+\end{equation*}
+where $\mathbf{e}_i$ denotes the $i$-th unit vector in Euclidean spaces. Then, $\left\{ \mathbf{v}_1 \right\}$ and $\left\{ \mathbf{v}_2, \mathbf{v}_3 \right\}$ form bases of $\mathcal{E}(1)$ and $\mathcal{E}(-1)$, respectively. By employing the Gram-Schmidt orthonormalization process, we would like to obtain orthonormal bases $\left\{ \mathbf{u}_1 \right\}$ and $\left\{ \mathbf{u}_2, \mathbf{u}_3 \right\}$ for $\mathcal{E}(1)$ and $\mathcal{E}(-1)$, respectively:
+\begin{equation*}
+    \begin{split}
+        \mathbf{u}_1 &:= \frac{\mathbf{v}_1}{\left\| \mathbf{v}_1 \right\|_2} = \frac{1}{\sqrt{3}} \left( \mathbf{e}_1 + \mathbf{e}_2 + \mathbf{e}_3 \right); \\
+        \mathbf{u}_2 &:= \frac{\mathbf{v}_2}{\left\| \mathbf{v}_2 \right\|_2} = \frac{1}{2} \left( \mathbf{e}_1 - \mathbf{e}_3 \right); \\
+        \mathbf{u}_3 &:= \frac{\mathbf{v}_3 - \frac{\left\langle \mathbf{v}_2, \mathbf{v}_3 \right\rangle}{\left\langle \mathbf{v}_2, \mathbf{v}_2 \right\rangle} \mathbf{v}_2}{\left\| \mathbf{v}_3 - \frac{\left\langle \mathbf{v}_2, \mathbf{v}_3 \right\rangle}{\left\langle \mathbf{v}_2, \mathbf{v}_2 \right\rangle} \mathbf{v}_2 \right\|_2}
+        = \frac{- \frac{1}{2} \mathbf{e}_1 + \mathbf{e}_2 - \frac{1}{2} \mathbf{e}_3}{\left\| - \frac{1}{2} \mathbf{e}_1 + \mathbf{e}_2 - \frac{1}{2} \mathbf{e}_3 \right\|_2}
+        = \frac{1}{\sqrt{6}} \left( - \mathbf{e}_1 + 2 \mathbf{e}_2 - \mathbf{e}_3 \right).
+    \end{split}
+\end{equation*}
+Since $\mathcal{E}(1) \perp \mathcal{E}(-1)$, we find that $\left\{ \mathbf{u}_1, \mathbf{u}_2, \mathbf{u}_3 \right\}$ forms an orthonormal basis for $\mathbb{R}^3$. Let $\mathbf{U} := \begin{bmatrix} \mathbf{u}_1 & \mathbf{u}_2 & \mathbf{u}_3 \end{bmatrix} \in \mathcal{O}_3$. Then we have
+\begin{equation}
+    \label{eqn2.2}
+    \mathbf{A} \mathbf{U} = 
+    \begin{bmatrix} \mathbf{A} \mathbf{u}_1 & \mathbf{A} \mathbf{u}_2 & \mathbf{A} \mathbf{u}_3 \end{bmatrix}
+    = \begin{bmatrix} \lambda_1 (\mathbf{A}) \mathbf{u}_1 & \lambda_2 (\mathbf{A}) \mathbf{u}_2 & \lambda_3 (\mathbf{A}) \mathbf{u}_3 \end{bmatrix}
+    = \mathbf{U} \mathbf{\Sigma},
+\end{equation}
+where $\mathbf{\Sigma} := \textsf{diag} \left( \lambda_1 (\mathbf{A}), \lambda_2 (\mathbf{A}), \lambda_3 (\mathbf{A}) \right) =
+\begin{bmatrix}
+    1 & 0 & 0 \\ 0 & -1 & 0 \\ 0 & 0 & -1
+\end{bmatrix} \in \mathbb{R}^{3 \times 3}$. So we arrive at the following spectral decomposition of $\mathbf{A}$:
+\begin{equation*}
+    \mathbf{A} = \mathbf{U} \mathbf{\Sigma} \mathbf{U}^{\top} 
+    =
+    \begin{bmatrix}
+        \frac{1}{\sqrt{3}} & \frac{1}{\sqrt{2}} & - \frac{1}{\sqrt{6}} \\
+        \frac{1}{\sqrt{3}} & 0 & \frac{2}{\sqrt{6}} \\
+        \frac{1}{\sqrt{3}} & - \frac{1}{\sqrt{2}} & - \frac{1}{\sqrt{6}}
+    \end{bmatrix}
+    \begin{bmatrix}
+        1 & 0 & 0 \\ 0 & -1 & 0 \\ 0 & 0 & -1
+    \end{bmatrix}
+    \begin{bmatrix}
+        \frac{1}{\sqrt{3}} & \frac{1}{\sqrt{2}} & - \frac{1}{\sqrt{6}} \\
+        \frac{1}{\sqrt{3}} & 0 & \frac{2}{\sqrt{6}} \\
+        \frac{1}{\sqrt{3}} & - \frac{1}{\sqrt{2}} & - \frac{1}{\sqrt{6}}
+    \end{bmatrix}^{\top},
+\end{equation*}
+and this gives us an \textsf{SVD} of $\mathbf{A}$ as well.
+}
+\end{problem}
+
+\begin{problem} [\emph{Exercise 5.3} in \cite{calafiore2014optimization}]
+\label{problem3}
+\normalfont{\ \\
+\indent (1) Let $\mathbf{A} = \mathbf{U} \mathbf{\Sigma} \mathbf{V}^{\top} \in \mathbb{R}^{n \times m}$ be a singular value decomposition of $\mathbf{A}$, where $\mathbf{U} := \begin{bmatrix} \mathbf{u}_1 & \mathbf{u}_2 & \cdots & \mathbf{u}_n \end{bmatrix} \in \mathcal{O}(n)$, $\mathbf{V} := \begin{bmatrix} \mathbf{v}_1 & \mathbf{v}_2 & \cdots & \mathbf{v}_m \end{bmatrix} \in \mathcal{O}(m)$, and
+\begin{equation*}
+    \mathbf{\Sigma} :=
+    \begin{bmatrix}
+        \textsf{diag} \left( \sigma_1, \sigma_2, \cdots, \sigma_m \right) \\
+        \mathbf{O}_{(n-m) \times m}
+    \end{bmatrix}
+    \in \mathbb{R}^{n \times m}.
+\end{equation*}
+Here, $\mathcal{O}(d)$ denotes the orthogonal group in dimension $d$ and $\sigma_1 \geq \sigma_2 \geq \cdots \geq \sigma_m \geq 0$ are the singular values of $\mathbf{A}$. Now we consider the matrix $\tilde{\mathbf{A}} := \begin{bmatrix} \mathbf{A} \\ \mathbf{I}_m \end{bmatrix} \in \mathbb{R}^{(n+m) \times m}$. Then we have
+\begin{equation}
+    \label{eqn3.1}
+    \tilde{\mathbf{A}}^{\top} \tilde{\mathbf{A}}
+    = \begin{bmatrix} \mathbf{A}^{\top} & \mathbf{I}_m \end{bmatrix}
+    \begin{bmatrix} \mathbf{A} \\ \mathbf{I}_m \end{bmatrix}
+    = \mathbf{A}^{\top} \mathbf{A} + \mathbf{I}_m \in \mathbb{R}^{m \times m}.
+\end{equation}
+Let $\tilde{\sigma}_1 \geq \tilde{\sigma}_2 \geq \cdots \geq \tilde{\sigma}_m \geq 0$ denote the singular values of $\tilde{\mathbf{A}}$. Then we obtain for every $i \in [m]$,
+\begin{equation*}
+    \begin{split}
+        \tilde{\sigma}_{i}^2 &= \lambda_i \left( \tilde{\mathbf{A}}^{\top} \tilde{\mathbf{A}} \right) \\
+        &\stackrel{\textnormal{(a)}}{=} \lambda_i \left( \mathbf{A}^{\top} \mathbf{A} + \mathbf{I}_m \right) \\
+        &= \lambda_i \left\{ \mathbf{V} \left( \mathbf{\Sigma}^{\top} \mathbf{\Sigma} + \mathbf{I}_m \right) \mathbf{V}^{\top} \right\} \\
+        &\stackrel{\textnormal{(b)}}{=} \lambda_i \left( \mathbf{\Sigma}^{\top} \mathbf{\Sigma} + \mathbf{I}_m \right) \\
+        &= \lambda_i \left( \textsf{diag} \left( 1 + \sigma_{1}^2, 1 + \sigma_{2}^2, \cdots, 1 + \sigma_{m}^2 \right) \right) \\
+        &= 1 + \sigma_{i}^2,
+    \end{split}
+\end{equation*}
+as desired, where the step (a) follows from the identity \eqref{eqn3.1}, and the step (b) holds by the facts that $\mathbf{V} \in \mathcal{O}(m)$ and the similar matrices have the same eigenvalues. So we arrive at $\tilde{\sigma}_i = \sqrt{1 + \sigma_{i}^2}$ for every $i \in [m]$. \\ [10pt]
+\indent (b) We first observe that
+\begin{equation}
+    \label{eqn3.2}
+    \tilde{\mathbf{A}} =
+    \begin{bmatrix}
+        \mathbf{U} \mathbf{\Sigma} \mathbf{V}^{\top} \\
+        \mathbf{V} \mathbf{V}^{\top}
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+        \mathbf{U} & \mathbf{O}_{n \times m} \\
+        \mathbf{O}_{m \times n} & \mathbf{V}
+    \end{bmatrix}
+    \begin{bmatrix}
+        \mathbf{\Sigma} \\ \mathbf{I}_m
+    \end{bmatrix}
+    \mathbf{V}^{\top}
+\end{equation}
+It is clear from the fact $\mathbf{U} \in \mathcal{O}(n)$ \& $\mathbf{V} \in \mathcal{O}(m)$ that
+\begin{equation}
+    \label{eqn3.3}
+    \begin{bmatrix}
+        \mathbf{U} & \mathbf{O}_{n \times m} \\
+        \mathbf{O}_{m \times n} & \mathbf{V}
+    \end{bmatrix}
+    \in \mathcal{O}(n+m).
+\end{equation}
+From \eqref{eqn3.2}, we may observe that it suffices to find an \textsf{SVD} of the matrix $\begin{bmatrix} \mathbf{\Sigma} \\ \mathbf{I}_m \end{bmatrix} \in \mathbb{R}^{(n+m) \times m}$. Given any $d \in \mathbb{N}$, let $\mathbf{e}_{i}^{(d)} \in \mathbb{R}^d$ denote the $i$-th unit vector in the $d$-dimensional Euclidean space $\mathbb{R}^d$. Set
+\begin{equation}
+    \label{eqn3.4}
+    \begin{split}
+        \mathbf{w}_i &:= \frac{\sigma_i}{\tilde{\sigma}_i} \mathbf{e}_{i}^{(n+m)} + \frac{1}{\tilde{\sigma}_i} \mathbf{e}_{n+i}^{(n+m)} \textnormal{ for } i \in [m]; \\
+        \mathbf{w}_{m+i} &:= - \frac{1}{\tilde{\sigma}_i} \mathbf{e}_{i}^{(n+m)} + \frac{\sigma_i}{\tilde{\sigma}_i} \mathbf{e}_{n+i}^{(n+m)} \textnormal{ for } i \in [m]; \\
+        \mathbf{w}_{2m+i} &:= \mathbf{e}_{m+i}^{(n+m)} \textnormal{ for } i \in [n-m].
+    \end{split}
+\end{equation}
+Here, $[d] := \left\{ 1, 2, \cdots, d \right\}$ for all $d \in \mathbb{N}$. Then, it is straightforward to reveal that $\left\{ \mathbf{w}_i \in \mathbb{R}^{n+m}: i \in [n+m] \right\}$ forms an orthonormal basis for $\mathbb{R}^{n+m}$. Also since
+\begin{equation*}
+    \mathbf{w}_i \left( \mathbf{e}_{i}^{(m)} \right)^{\top} = \frac{\sigma_i}{\tilde{\sigma}_i} \mathbf{e}_{i}^{(n+m)} \left( \mathbf{e}_{i}^{(m)} \right)^{\top} + \frac{1}{\tilde{\sigma}_i} \mathbf{e}_{n+i}^{(n+m)} \left( \mathbf{e}_{i}^{(m)} \right)^{\top}
+\end{equation*}
+for every $i \in [m]$, we have
+\begin{equation}
+    \label{eqn3.5}
+    \begin{bmatrix} \mathbf{\Sigma} \\ \mathbf{I}_m \end{bmatrix}
+    = \sum_{i=1}^{m} \tilde{\sigma}_i \mathbf{w}_i \left( \mathbf{e}_{i}^{(m)} \right)^{\top}
+    = \mathbf{W} \tilde{\mathbf{\Sigma}} \mathbf{I}_{m}^{\top},
+\end{equation}
+where $\mathbf{W} := \begin{bmatrix} \mathbf{w}_1 & \mathbf{w}_2 & \cdots \mathbf{w}_{n+m} \end{bmatrix} \in \mathcal{O}(n+m)$ and $\tilde{\mathbf{\Sigma}} := \begin{bmatrix} \textsf{diag} \left( \tilde{\sigma}_1, \tilde{\sigma}_2, \cdots, \tilde{\sigma}_m \right) \\ \mathbf{O}_{n \times m} \end{bmatrix} \in \mathbb{R}^{(n+m) \times m}$. Therefore, the equation \eqref{eqn3.5} gives an \textsf{SVD} of $\begin{bmatrix} \mathbf{\Sigma} \\ \mathbf{I}_m \end{bmatrix}$. So by substituting \eqref{eqn3.5} into the equation \eqref{eqn3.2}, we now obtain
+\begin{equation}
+    \label{eqn3.6}
+    \tilde{\mathbf{A}} 
+    = \begin{bmatrix}
+        \mathbf{U} & \mathbf{O}_{n \times m} \\
+        \mathbf{O}_{m \times n} & \mathbf{V}
+    \end{bmatrix}
+    \begin{bmatrix}
+        \mathbf{\Sigma} \\ \mathbf{I}_m
+    \end{bmatrix}
+    \mathbf{V}^{\top}
+    = \begin{bmatrix}
+        \mathbf{U} & \mathbf{O}_{n \times m} \\
+        \mathbf{O}_{m \times n} & \mathbf{V}
+    \end{bmatrix}
+    \mathbf{W} \tilde{\mathbf{\Sigma}} \mathbf{I}_{m}^{\top}
+    \mathbf{V}^{\top}
+    = \underbrace{\left( \begin{bmatrix} \mathbf{U} & \mathbf{O}_{n \times m} \\ \mathbf{O}_{m \times n} & \mathbf{V} \end{bmatrix} \mathbf{W} \right)}_{=: \ \tilde{\mathbf{U}}} \tilde{\mathbf{\Sigma}} \mathbf{V}^{\top}.
+\end{equation}
+Putting $\tilde{\mathbf{U}} := \begin{bmatrix} \mathbf{U} & \mathbf{O}_{n \times m} \\ \mathbf{O}_{m \times n} & \mathbf{V} \end{bmatrix} \mathbf{W} \in \mathcal{O}(n+m)$ and $\tilde{\mathbf{V}} := \mathbf{V} \in \mathcal{O}(m)$, the equation \eqref{eqn3.6} provides an \textsf{SVD} of $\tilde{\mathbf{A}}$,
+\begin{equation*}
+    \tilde{\mathbf{A}} = \tilde{\mathbf{U}} \tilde{\mathbf{\Sigma}} \tilde{\mathbf{V}}^{\top}.
+\end{equation*}
+This completes our explicit derivation of an \mathsf{SVD} of the matrix $\tilde{\mathbf{A}} \in \mathbb{R}^{(n+m) \times m}$.
+}
+\end{problem}
+
+\newpage
+
+\bibliographystyle{plain}
+\bibliography{main.bib}
+
+\end{document}
