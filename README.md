@@ -1,2 +1,2 @@
 # KAIST_MAS374
-KAIST &lt;MAS374: Optimization Theory>
+<MAS374: Optimization Theory> at the Department of Mathematical Sciences, KAIST.
