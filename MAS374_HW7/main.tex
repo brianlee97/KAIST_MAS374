@@ -1,0 +1,428 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.7in]{geometry} 
+\usepackage{amsmath,amsthm,amssymb,amsfonts, amsbsy}
+\usepackage{enumitem}
+\usepackage{dsfont}
+\usepackage{soul}
+\usepackage{mathtools}
+\usepackage[utf8]{inputenc}
+\usepackage{multirow}
+\usepackage[colorlinks]{hyperref}
+\usepackage{cleveref}
+\usepackage{bbm}
+\usepackage{tikz-cd}
+\usepackage{adjustbox}
+\usepackage[normalem]{ulem}
+\usepackage{authblk}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{graphicx}
+
+\renewcommand{\baselinestretch}{1.25}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+ 
+\newtheorem{lemma}{Lemma}
+\newtheorem{claim}{\sf Claim}
+\newtheorem{defi}{Definition}
+\newtheorem{thm}{Theorem}
+\newtheorem{cor}{Corollary}
+\newtheorem{prop}{Proposition}
+\newtheorem{rmk}{\it Remark}
+\newtheorem{ex}{Example}
+\newtheorem{notation}{Notation}
+\newtheorem{algorithm}{Algorithm}
+\newtheorem{assumption}{Assumption}
+\newtheorem{problem}{Problem}
+
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\numberwithin{equation}{problem}
+  
+\begin{document}
+ 
+\title{MAS374 Optimization Theory\\ Homework \#7}
+\author{20150597 Jeonghwan Lee\footnote{E-mail: \href{mailto:sa8seung@kaist.ac.kr}{\texttt{sa8seung@kaist.ac.kr}}}}
+\affil{Department of Mathematical Sciences, KAIST}
+
+\maketitle
+
+\begin{problem} [\emph{Exercise 10.1} in \cite{calafiore2014optimization}: Squaring SOCP constraints]
+\label{problem1}
+\normalfont{\ \\
+\indent Let
+\begin{equation*}
+    \mathcal{C}_n := \left\{ \mathbf{x} = \left( x_1, x_2, \cdots, x_n \right) \in \mathbb{R}^n : \left\| \mathbf{x} \right\|_{2}^2 \leq \left( x_1 + 2 x_2 \right)^2 \right\},\ \forall n \geq 2.
+\end{equation*}
+We claim that $\mathcal{C}_n$ is not convex in $\mathbb{R}^n$ for every $n \geq 2$. First, we consider the case where $n = 2$. Then, the subset $\mathcal{C}_2 \subseteq \mathbb{R}^2$ can be expressed in the following simpler way:
+\begin{equation*}
+    \mathcal{C}_2 = \left\{ \left( x_1, x_2 \right) \in \mathbb{R}^2 : x_2 \left( 4 x_1 + 3 x_2 \right) \geq 0 \right\}.
+\end{equation*}
+Then $\mathcal{C}_2$ is not convex in $\mathbb{R}^2$ from the following reason: It's clear that $\left( 3, 0 \right), \left( 3, -4 \right) \in \mathcal{C}_2$. However, their midpoint $\left( 3, -2 \right)$ does not belong to $\mathcal{C}_2$ and this shows that $\mathcal{C}_2$ is not convex in $\mathbb{R}^2$.
+\medskip
+
+\indent Hereafter, we consider the case for which $n \geq 3$ and assume towards a contradiction that $\mathcal{C}_n$ is a convex subset of $\mathbb{R}^n$. Consider two vectors $\mathbf{x} \in \mathbb{R}^n$ and $\mathbf{y} \in \mathbb{R}^n$, where
+\begin{equation*}
+    \begin{split}
+        \mathbf{x} &:= \mathbf{e}_1 + \mathbf{e}_2 + \sqrt{\frac{7}{n-2}} \left( \sum_{j=3}^{n} \mathbf{e}_j \right); \\
+        \mathbf{y} &:= - \mathbf{e}_1 - \mathbf{e}_2 + \sqrt{\frac{7}{n-2}} \left( \sum_{j=3}^{n} \mathbf{e}_j \right),
+    \end{split}
+\end{equation*}
+where $\mathbf{e}_j \in \mathbb{R}^n$ denotes the $j$-th unit vector in $\mathbb{R}^n$ for $j \in [n]$. Then, it's straightforward to see that
+\begin{equation}
+    \label{eqn1.1}
+    \begin{split}
+        \left\| \mathbf{x} \right\|_{2}^2 &= 1^2 + 1^2 + (n-2) \cdot \left( \sqrt{\frac{7}{n-2}} \right)^2 = 9 = \left( x_1 + 2 x_2 \right)^2; \\
+        \left\| \mathbf{y} \right\|_{2}^2 &= \left( -1 \right)^2 + \left( -1 \right)^2 + (n-2) \cdot \left( \sqrt{\frac{7}{n-2}} \right)^2 = 9 = \left( y_1 + 2 y_2 \right)^2,
+    \end{split}
+\end{equation}
+thereby $\mathbf{x}, \mathbf{y} \in \mathcal{C}_n$. Due to the convexity of $\mathcal{C}_n$ in $\mathbb{R}^n$, it holds that $\left( 1 - \theta \right) \mathbf{x} + \theta \mathbf{y} \in \mathcal{C}_n$ for every $\theta \in [0, 1]$:
+\begin{equation}
+    \label{eqn1.2}
+    \begin{split}
+        \left\| \left( 1 - \theta \right) \mathbf{x} + \theta \mathbf{y} \right\|_{2}^2 
+        &\leq \left[ \left\{ \left( 1 - \theta \right) x_1 + \theta y_1 \right\} + 2 \left\{ \left( 1 - \theta \right) x_2 + \theta y_2 \right\} \right]^2 \\
+        &= \left\{ \left( 1 - \theta \right) \left( x_1 + 2 x_2 \right) + \theta \left( y_1 + 2 y_2 \right) \right\}^2.
+    \end{split}
+\end{equation}
+However, by doing some straightforward algebra, we arrive at
+\begin{equation}
+    \label{eqn1.3}
+    \begin{split}
+        &\left\| \left( 1 - \theta \right) \mathbf{x} + \theta \mathbf{y} \right\|_{2}^2 - \left\{ \left( 1 - \theta \right) \left( x_1 + 2 x_2 \right) + \theta \left( y_1 + 2 y_2 \right) \right\}^2 \\
+        = \ & \left( 1 - \theta \right)^2 \left\{ \left\| \mathbf{x} \right\|_{2}^2 - \left( x_1 + 2 x_2 \right)^2 \right\} + \theta^2 \left\{ \left\| \mathbf{y} \right\|_{2}^2 - \left( y_1 + 2 y_2 \right)^2 \right\} + 2 \theta \left( 1 - \theta \right) \left\{ \mathbf{x}^{\top} \mathbf{y} - \left( x_1 + 2 x_2 \right) \left( y_1 + 2 y_2 \right) \right\} \\
+        \stackrel{\textnormal{(a)}}{=} \ & 2 \theta \left( 1 - \theta \right) \left\{ \mathbf{x}^{\top} \mathbf{y} - \left( x_1 + 2 x_2 \right) \left( y_1 + 2 y_2 \right) \right\} \\ 
+        = \ & 28 \theta \left( 1 - \theta \right) > 0 \\
+    \end{split}
+\end{equation}
+for every $\theta \in \left( 0, 1 \right)$, where the step (a) follows from the equation \eqref{eqn1.1}. Therefore, the conclusion \eqref{eqn1.3} yields a contradiction against the convexity of $\mathcal{C}_n$ in $\mathbb{R}^n$, which proves that $\mathcal{C}_n$ is not convex in $\mathbb{R}^n$ as desired.
+}
+\end{problem}
+
+\begin{problem} [\emph{Exercise 10.6} in \cite{calafiore2014optimization}: A trust-region problem]
+\label{problem2}
+\normalfont{\ \\
+\indent We consider the following primal convex quadratic-constrained quadratic program (QCQP):
+\begin{equation}
+    \label{eqn2.1}
+    \begin{split}
+        p^* = \min_{\mathbf{x} \in \mathbb{R}^n} \ & \left( \frac{1}{2} \mathbf{x}^{\top} \mathbf{Hx} + \mathbf{c}^{\top} \mathbf{x} + d \right) \\
+        \textnormal{subject to }& \mathbf{x}^{\top} \mathbf{x} \leq r^2,
+    \end{split}
+\end{equation}
+where $\mathbf{H} \in \mathcal{S}_{++}^{n}$, $\mathbf{c} \in \mathbb{R}^n$, $d \in \mathbb{R}$, and $r \in \left( 0, +\infty \right)$, where $\mathcal{S}_{++}^{n}$ is the set of all $n \times n$ positive definite real symmetric matrices. Then the Lagrangian function of \eqref{eqn2.1} is given by $\mathcal{L} \left( \cdot, \cdot \right) : \mathbb{R}^n \times \mathbb{R} \rightarrow \mathbb{R}$, where
+\begin{equation*}
+    \mathcal{L} \left( \mathbf{x}, \lambda \right) :=
+    \left( \frac{1}{2} \mathbf{x}^{\top} \mathbf{Hx} + \mathbf{c}^{\top} \mathbf{x} + d \right) + \lambda \left( \mathbf{x}^{\top} \mathbf{x} - r^2 \right)
+    = \frac{1}{2} \mathbf{x}^{\top} \left( \mathbf{H} + 2 \lambda \mathbf{I}_n \right) \mathbf{x} + \mathbf{c}^{\top} \mathbf{x} + \left( d - r^2 \lambda \right).
+\end{equation*}
+So one can see that
+\begin{equation*}
+    \nabla_{\mathbf{x}} \mathcal{L} \left( \mathbf{x}, \lambda \right) = \left( \mathbf{H} + 2 \lambda \mathbf{I}_n \right) \mathbf{x} + \mathbf{c},
+\end{equation*}
+which implies that for every $\lambda \geq 0$,
+\begin{equation}
+    \label{eqn2.2}
+    \argmin \left\{ \mathcal{L} \left( \mathbf{x}, \lambda \right) : \mathbf{x} \in \mathbb{R}^n \right\} 
+    = \left\{ \mathbf{x} (\lambda) \right\}, \textnormal{ where } \mathbf{x}(\lambda) := - \left( \mathbf{H} + 2 \lambda \mathbf{I}_n \right)^{-1} \mathbf{c}.
+\end{equation}
+Here, we note that $\mathbf{H} + 2 \lambda \mathbf{I}_n \in \mathcal{S}_{++}^n$ and the function $\mathbf{x} \in \mathbb{R}^n \mapsto \mathcal{L} \left( \mathbf{x}, \lambda \right) \in \mathbb{R}$ is convex for every $\lambda \geq 0$.
+So if $g(\lambda) : \mathbb{R} \rightarrow \left[ - \infty, +\infty \right)$ is the Lagrange dual function associated to the primal convex QCQP \eqref{eqn2.1}, then for every $\lambda \geq 0$,
+\begin{equation*}
+    g(\lambda) = \inf \left\{ \mathcal{L} \left( \mathbf{x}, \lambda \right) : \mathbf{x} \in \mathbb{R}^n \right\}
+    = \mathcal{L} \left( \mathbf{x} (\lambda), \lambda \right)
+    = - \frac{1}{2} \mathbf{c}^{\top} \left( \mathbf{H} + 2 \lambda \mathbf{I}_n \right)^{-1} \mathbf{c} + d - r^2 \lambda.
+\end{equation*}
+Hence, the dual problem associated to the primal convex QCQP \eqref{eqn2.1} is formulated by
+\begin{equation}
+    \label{eqn2.3}
+    \begin{split}
+        d^* = \max_{\lambda \in \mathbb{R}} \ & \left\{  - \frac{1}{2} \mathbf{c}^{\top} \left( \mathbf{H} + 2 \lambda \mathbf{I}_n \right)^{-1} \mathbf{c} + d - r^2 \lambda \right\} \\
+        \textnormal{subject to } & \lambda \geq 0.
+    \end{split}
+\end{equation}
+We note that since the primal convex QCQP \eqref{eqn2.1} is strictly feasible, the strong duality holds between the primal convex QCQP \eqref{eqn2.1} and its dual problem \eqref{eqn2.3}, \emph{i.e.}, $p^* = d^*$, by the Slater's condition for convex programs (\emph{Proposition 8.7} in \cite{calafiore2014optimization}). 
+\medskip
+
+\indent Now, we let $\mathcal{P}_{\textsf{opt}} \subseteq \mathbb{R}^n$ and $\mathcal{D}_{\textsf{opt}} \subseteq \mathbb{R}$ denote the sets of optimal solutions to the primal convex QCQP \eqref{eqn2.1} and its dual problem \eqref{eqn2.3}, respectively. Note that $\mathcal{P}_{\textsf{opt}} \neq \varnothing$ since the feasible set of the primal problem \eqref{eqn2.1} is a compact subset of $\mathbb{R}^n$ and the primal objective function is convex. 
+
+\begin{claim}
+\label{claim2.1}
+$\mathcal{P}_{\textnormal{\textsf{opt}}} \subseteq \left\{ \mathbf{x} \left( \lambda^* \right) : \lambda^* \in \mathcal{D}_{\textnormal{\textsf{opt}}} \right\}$.
+\end{claim}
+
+\begin{proof} [Proof of Claim \ref{claim2.1}]
+Choose any $\left( \mathbf{x}^*, \lambda^* \right) \in \mathcal{P}_{\textnormal{\textsf{opt}}} \times \mathcal{D}_{\textnormal{\textsf{opt}}}$. Since the strong duality between the primal convex QCQP \eqref{eqn2.1} and its dual problem \eqref{eqn2.3} holds, the Karush-Kuhn-Tucker (\textsf{KKT}) conditions hold for the pair $\left( \mathbf{x}^*, \lambda^* \right) \in \mathcal{P}_{\textnormal{\textsf{opt}}} \times \mathcal{D}_{\textnormal{\textsf{opt}}}$:
+\begin{enumerate} [label=(\roman*)]
+    \item Lagrangian stationarity: $\left. \nabla_{\mathbf{x}} \mathcal{L} \left( \mathbf{x}, \lambda^* \right) \right|_{\mathbf{x} = \mathbf{x}^*} = \mathbf{0}$;
+    \item Complementary slackness: $\lambda^* \left( \left( \mathbf{x}^* \right)^{\top} \mathbf{x}^* - r^2 \right) = 0$;
+    \item Primal feasibility: $\left( \mathbf{x}^* \right)^{\top} \mathbf{x}^* \leq r^2$;
+    \item Dual feasibility: $\lambda^* \geq 0$.
+\end{enumerate}
+The condition (\romannumeral 1) implies
+\begin{equation*}
+    \left( \mathbf{H} + 2 \lambda^* \mathbf{I}_n \right) \mathbf{x}^* + \mathbf{c} = \mathbf{0},
+\end{equation*}
+thereby $\mathbf{x}^* = - \left( \mathbf{H} + 2 \lambda^* \mathbf{I}_n \right)^{-1} \mathbf{c} = \mathbf{x} \left( \lambda^* \right)$. This establishes Claim \ref{claim2.1}.
+
+\end{proof}
+
+\indent In view of Claim \ref{claim2.1}, it suffices to find dual optimal solutions explicitly! The following result characterizes the set $\mathcal{D}_{\textsf{opt}}$ of dual optimal solutions:
+\begin{claim}
+\label{claim2.2}
+It holds that $\mathcal{D}_{\textnormal{\textsf{opt}}} = \left\{ \lambda^* \right\}$, where
+\begin{equation}
+    \label{eqn2.4}
+    \lambda^* :=
+    \begin{cases}
+        0 & \textnormal{if } \left\| \mathbf{H}^{-1} \mathbf{c} \right\|_2 \leq r; \\
+        \theta^* & \textnormal{otherwise},
+    \end{cases}
+\end{equation}
+where $\theta^* \in \mathbb{R}_{+}$ is the unique value in $\left( 0, +\infty \right)$ such that $\left\| \left( \mathbf{H} + 2 \theta^* \mathbf{I}_n \right)^{-1} \mathbf{c} \right\|_2 = r$ provided that $\left\| \mathbf{H}^{-1} \mathbf{c} \right\|_2 > r$.
+\end{claim}
+
+\begin{proof} [Proof of Claim \ref{claim2.2}]
+Let $\mathbf{H} = \mathbf{U \Sigma U}^{\top} = \sum_{i=1}^{n} \lambda_i (\mathbf{H}) \mathbf{u}_i \mathbf{u}_{i}^{\top}$ be the spectral decomposition of $\mathbf{H} \in \mathcal{S}_{++}^n$, where $\mathbf{U} := \begin{bmatrix} \mathbf{u}_1 & \mathbf{u}_2 & \cdots & \mathbf{u}_n \end{bmatrix} \in \mathcal{O}(n)$, $\mathbf{\Sigma} := \textsf{diag} \left( \lambda_1 (\mathbf{H}), \lambda_2 (\mathbf{H}), \cdots, \lambda_n (\mathbf{H}) \right) \in \mathbb{R}^{n \times n}$, and
+\begin{equation*}
+    \lambda_1 (\mathbf{H}) \geq \lambda_2 (\mathbf{H}) \geq \cdots \geq \lambda_n (\mathbf{H}) > 0.
+\end{equation*}
+Here, $\mathcal{O}(n)$ denotes the orthogonal group of dimension $n$. Then for every $\lambda \geq 0$,
+\begin{equation}
+    \label{eqn2.5}
+    \begin{split}
+        g(\lambda) &= - \frac{1}{2} \mathbf{c}^{\top} \left( \mathbf{H} + 2 \lambda \mathbf{I}_n \right)^{-1} \mathbf{c} + d - r^2 \lambda \\
+        &= - \frac{1}{2} \mathbf{c}^{\top} \left\{ \mathbf{U} \textsf{diag} \left( \frac{1}{\lambda_1 (\mathbf{H}) + 2 \lambda}, \frac{1}{\lambda_2 (\mathbf{H}) + 2 \lambda}, \cdots, \frac{1}{\lambda_n (\mathbf{H}) + 2 \lambda} \right) \mathbf{U}^{\top} \right\} \mathbf{c} + d - r^2 \lambda \\
+        &= - \frac{1}{2} \sum_{i=1}^{n} \left( \left[ \mathbf{U}^{\top} \mathbf{c} \right]_i \right)^2 \cdot \frac{1}{\lambda_i (\mathbf{H}) + 2 \lambda} + d - r^2 \lambda \\
+        &\stackrel{\textnormal{(a)}}{=} - \frac{1}{2} \sum_{i=1}^{n} \frac{\left( \mathbf{u}_{i}^{\top} \mathbf{c} \right)^2}{\lambda_i (\mathbf{H}) + 2 \lambda} + d - r^2 \lambda,
+    \end{split}
+\end{equation}
+where the step (a) holds since
+\begin{equation*}
+    \left[ \mathbf{U}^{\top} \mathbf{c} \right]_i = \mathbf{e}_{i}^{\top} \mathbf{U}^{\top} \mathbf{c}
+    = \left( \mathbf{U e}_i \right)^{\top} \mathbf{c} = \mathbf{u}_{i}^{\top} \mathbf{c},\ \forall i \in [n].
+\end{equation*}
+From the equation \eqref{eqn2.5}, one has
+\begin{equation}
+    \label{eqn2.6}
+    \begin{split}
+        g' (\lambda) &=
+        \sum_{i=1}^{n} \frac{\left( \mathbf{u}_{i}^{\top} \mathbf{c} \right)^2}{\left\{ \lambda_i (\mathbf{H}) + 2 \lambda \right\}^2} - r^2 \\
+        &= \mathbf{c}^{\top} \left\{ \sum_{i=1}^{n} \frac{1}{\left\{ \lambda_i (\mathbf{H}) + 2 \lambda \right\}^2} \mathbf{u}_i \mathbf{u}_{i}^{\top} \right\} \mathbf{c} - r^2 \\
+        &= \mathbf{c}^{\top} \left\{ \mathbf{U} \textsf{diag} \left( \frac{1}{\left\{ \lambda_1 (\mathbf{H}) + 2 \lambda \right\}^2}, \frac{1}{\left\{ \lambda_2 (\mathbf{H}) + 2 \lambda \right\}^2}, \cdots, \frac{1}{\left\{ \lambda_n (\mathbf{H}) + 2 \lambda \right\}^2} \right) \mathbf{U}^{\top} \right\} \mathbf{c} - r^2 \\
+        &= \mathbf{c}^{\top} \left\{ \left( \mathbf{H} + 2 \lambda \mathbf{I}_n \right)^{-1} \right\}^{\top} \left( \mathbf{H} + 2 \lambda \mathbf{I}_n \right)^{-1} \mathbf{c} - r^2 \\
+        &= \left\| \left( \mathbf{H} + 2 \lambda \mathbf{I}_n \right)^{-1} \mathbf{c} \right\|_{2}^2 - r^2
+    \end{split}
+\end{equation}
+and
+\begin{equation*}
+    g''(\lambda) = - 2 \sum_{i=1}^{n} \frac{\left( \mathbf{u}_{i}^{\top} \mathbf{c} \right)^2}{\left\{ \lambda_i (\mathbf{H}) + 2 \lambda \right\}^3}
+\end{equation*}
+for every $\lambda \geq 0$.
+\medskip
+
+\indent \textbf{Case \#1. $\mathbf{c} = \mathbf{0}$:} For this case, it's clear that the dual optimal solution is unique and given by $\lambda^* = 0$. This completes the proof of Claim \ref{claim2.2} for the case where $\mathbf{c} = \mathbf{0}$.
+\medskip
+
+\indent \textbf{Case \#2. $\mathbf{c} \in \mathbb{R}^n \setminus \left\{ \mathbf{0} \right\}$:} Then we know that $g'' (\lambda) < 0$ for all $\lambda \geq 0$. So, the function $\lambda \in \mathbb{R}_{+} \mapsto g'(\lambda) \in \mathbb{R}$ is strictly decreasing. This guarantees that if $\left\| \mathbf{H}^{-1} \mathbf{c} \right\|_2 > r$, there exists a unique value $\theta^* \in \left( 0, +\infty \right)$ such that $\left\| \left( \mathbf{H} + 2 \theta^* \mathbf{I}_n \right)^{-1} \mathbf{c} \right\|_{2}^2 = r^2$ since $g' (0) = \left\| \mathbf{H}^{-1} \mathbf{c} \right\|_{2}^2 - r^2 > 0$.
+\begin{enumerate} [label=(\roman*)]
+    \item $\left\| \mathbf{H}^{-1} \mathbf{c} \right\|_{2} \leq r$: We have $g' (0) = \left\| \mathbf{H}^{-1} \mathbf{c} \right\|_{2}^2 - r^2 \leq 0$. Thus, $g' (\lambda) < 0$ for every $\lambda \in \left( 0, +\infty \right)$ and this ensures that
+    \begin{equation}
+        \label{eqn2.7}
+        \argmax \left\{ g(\lambda) : \lambda \in \mathbb{R}_{+} \right\} = \mathcal{D}_{\textsf{opt}} = \left\{ 0 \right\},
+    \end{equation}
+    since the function $\lambda \in \mathbb{R}_{+} \mapsto g'(\lambda) \in \mathbb{R}$ is strictly decreasing;
+    \item $\left\| \mathbf{H}^{-1} \mathbf{c} \right\|_{2} > r$: We have $g' (0) = \left\| \mathbf{H}^{-1} \mathbf{c} \right\|_{2}^2 - r^2 > 0$. For this case, one can see that
+    \begin{equation*}
+        \left\{ \lambda \in \mathbb{R}_{+} : g' (\lambda) = 0 \right\} = \left\{ \theta^* \right\}.
+    \end{equation*}
+    Since the function $\lambda \in \mathbb{R}_{+} \mapsto g'(\lambda) \in \mathbb{R}$ is strictly decreasing, we may conclude that
+    \begin{equation}
+        \label{eqn2.8}
+        \argmax \left\{ g(\lambda) : \lambda \in \mathbb{R}_{+} \right\} = \mathcal{D}_{\textsf{opt}} = \left\{ \theta^* \right\}.
+    \end{equation}
+\end{enumerate}
+By taking two pieces \eqref{eqn2.7} and \eqref{eqn2.8} collectively, we finish the proof of Claim \ref{claim2.2} for the case where $\mathbf{c} \in \mathbb{R}^n \setminus \left\{ \mathbf{0} \right\}$.
+
+\end{proof}
+
+\indent Due to Claim \ref{claim2.1} \& \ref{claim2.2} and from the fact that $\mathcal{P}_{\textsf{opt}}$ is non-empty, it holds that
+\begin{equation}
+    \label{eqn2.9}
+    \mathcal{P}_{\textnormal{\textsf{opt}}} = \left\{ \mathbf{x} \left( \lambda^* \right) : \lambda^* \in \mathcal{D}_{\textnormal{\textsf{opt}}} \right\}
+    = \left\{ - \left( \mathbf{H} + 2 \lambda^* \mathbf{I}_n \right)^{-1} \mathbf{c} : \lambda^* \in \mathcal{D}_{\textnormal{\textsf{opt}}} \right\}.
+\end{equation}
+Hence, $\mathbf{x} \left( \lambda^* \right) = - \left( \mathbf{H} + 2 \lambda^* \mathbf{I}_n \right)^{-1} \mathbf{c}$ is the unique optimal solution to the primal convex QCQP \eqref{eqn2.1}, where $\lambda^* \in \mathbb{R}_{+}$ is the value given by \eqref{eqn2.4}. By substituting $\lambda^*$ to $\frac{\lambda^*}{2}$, the value $\lambda^*$ equals to the one in Problem \ref{problem2} and this completes the proof.
+}
+\end{problem}
+
+\begin{problem} [\emph{Exercise 10.8} in \cite{calafiore2014optimization}: Proving convexity via duality]
+\label{problem3}
+\normalfont{\ \\
+\indent (1) To begin with, we define a function $\Phi \left( \cdot, \cdot \right) : \mathbb{R}^n \times \mathbb{R} \rightarrow \left( -\infty, +\infty \right]$ by
+\begin{equation*}
+    \Phi \left( \mathbf{x}, t \right) :=
+    \begin{cases}
+        2 \left( t - \sum_{i=1}^{n} \sqrt{x_i + t^2} \right) & \textnormal{if } \mathbf{x} \in \mathbb{R}_{++}^n; \\
+        +\infty & \textnormal{otherwise,}
+    \end{cases}
+\end{equation*}
+and $f(\cdot) : \mathbb{R}^n \rightarrow \left( -\infty, +\infty \right]$ by
+\begin{equation*}
+    f( \mathbf{x} ) := \sup \left\{ \Phi \left( \mathbf{x}, t \right) : t \in \mathbb{R} \right\}.
+\end{equation*}
+Now we fix any $\mathbf{x} \in \mathbb{R}_{++}^n$. Then we have
+\begin{equation*}
+    \frac{\partial}{\partial t} \Phi \left( \mathbf{x}, t \right) 
+    = 2 - 2 t \sum_{i=1}^{n} \frac{1}{\sqrt{x_i + t^2}},
+\end{equation*}
+and
+\begin{equation*}
+    \frac{\partial^2}{\partial t^2} \Phi \left( \mathbf{x}, t \right) 
+    = - 2 \sum_{i=1}^{n} \frac{x_i}{\left( x_i + t^2 \right)^{\frac{3}{2}}}
+\end{equation*}
+for every $t \in \mathbb{R}$. Thus, one can see that $\frac{\partial^2}{\partial t^2} \Phi \left( \mathbf{x}, t \right) < 0$ for every $t \in \mathbb{R}$. Hence, the function $\Phi \left( \mathbf{x}, \cdot \right) : \mathbb{R} \rightarrow \mathbb{R}$ is concave for every fixed $\mathbf{x} \in \mathbb{R}_{++}^n$, which shows that the following optimization problem which defines the value of $f(\mathbf{x}) \in \mathbb{R}$:
+\begin{equation}
+    \label{eqn3.1}
+    f(\mathbf{x}) = \max_{t \in \mathbb{R}} \Phi \left( \mathbf{x}, t \right) 
+    = \max_{t \in \mathbb{R}} 2 \left( t - \sum_{i=1}^{n} \sqrt{x_i + t^2} \right),
+\end{equation}
+is a convex optimization problem in the variable $t \in \mathbb{R}$ for each $\mathbf{x} \in \mathbb{R}_{++}^n$.
+\medskip
+
+\indent Hereafter, we provide you an equivalent second-order cone program (SOCP) formulation to the optimization problem \eqref{eqn3.1}. Note that the optimization problem \eqref{eqn3.1} is equivalent with the following formulation with additional variable $\mathbf{u} = \begin{bmatrix} u_1 & u_2 & \cdots & u_n \end{bmatrix}^{\top} \in \mathbb{R}^n$:
+\begin{equation}
+    \label{eqn3.2}
+    \begin{split}
+        - f(\mathbf{x}) = \min_{\left( t, \mathbf{u} \right) \in \mathbb{R} \times \mathbb{R}^n} \ &2 \left( \sum_{i=1}^{n} u_i - t \right) \\
+        \textnormal{subject to } & \sqrt{x_i + t^2} \leq u_i,\ i \in [n].
+    \end{split}
+\end{equation}
+Let $\mathbf{e}_{j}^{(n+1)} \in \mathbb{R}^{n+1}$ denote the $j$-th unit vector for every $j \in [n+1]$. By setting $\mathbf{A}_i := \mathbf{e}_{i+1}^{(n+1)} \left( \mathbf{e}_{i+1}^{(n+1)} \right)^{\top} \in \mathbb{R}^{(n+1) \times (n+1)}$, $\mathbf{b}_i := \sqrt{x_i} \cdot \mathbf{e}_{i+1}^{(n+1)} \in \mathbb{R}^{n+1}$, $\mathbf{c}_i := \mathbf{e}_{i+1}^{n+1} \in \mathbb{R}^{(n+1)}$, and $d_i := 0 \in \mathbb{R}$ for $i \in [n]$, one can realize that the inequality constraint $\sqrt{x_i + t^2} \leq u_i$ in the equivalent formulation \eqref{eqn3.2} of the optimization problem \eqref{eqn3.1} is equivalent to
+\begin{equation*}
+    \left\| \mathbf{A}_i \begin{bmatrix} t \\ \mathbf{u} \end{bmatrix} + \mathbf{b}_i \right\|_{2} \leq \mathbf{c}_{i}^{\top} \begin{bmatrix} t \\ \mathbf{u} \end{bmatrix} + d_i
+\end{equation*}
+for every $i \in [n]$. Hence, the optimization problem \eqref{eqn3.2} can be equivalently formulated into the following SOCP:
+\begin{equation}
+    \label{eqn3.3}
+    \begin{split}
+        - f(\mathbf{x}) = \min_{\left( t, \mathbf{u} \right) \in \mathbb{R} \times \mathbb{R}^n} \ & \mathbf{c}^{\top} \begin{bmatrix} t \\ \mathbf{u} \end{bmatrix} \\
+        \textnormal{subject to } &\left\| \mathbf{A}_i \begin{bmatrix} t \\ \mathbf{u} \end{bmatrix} + \mathbf{b}_i \right\|_{2} \leq \mathbf{c}_{i}^{\top} \begin{bmatrix} t \\ \mathbf{u} \end{bmatrix} + d_i,\ i \in [n],
+    \end{split}
+\end{equation}
+where $\mathbf{c} := - 2 \mathbf{e}_{1}^{(n+1)} + \sum_{i=2}^{n+1} 2 \mathbf{e}_{i}^{(n+1)} \in \mathbb{R}^{n+1}$, which gives an SOCP formulation which is equivalent with the original problem \eqref{eqn3.1}. 
+\medskip
+
+\indent (2) We first prove that the function $\Phi \left( \cdot, t \right) : \mathbb{R}^n \rightarrow \left( -\infty, +\infty \right]$ is convex for every $t \in \mathbb{R}$. By doing some straightforward calculations, we obtain
+\begin{equation*}
+    \frac{\partial}{\partial x_i} \Phi \left( \mathbf{x}, t \right) = - \frac{1}{\sqrt{x_i + t^2}},\ \forall i \in [n],
+\end{equation*}
+and
+\begin{equation*}
+    \frac{\partial^2}{\partial x_j x_i} \Phi \left( \mathbf{x}, t \right) =
+    \begin{cases}
+        \frac{1}{2} \left( x_i + t^2 \right)^{- \frac{3}{2}} & \textnormal{if } i = j; \\
+        0 & \textnormal{otherwise,}
+    \end{cases}
+\end{equation*}
+for every $\mathbf{x} \in \mathbb{R}_{++}^{n} = \textsf{dom} \left( \Phi \left( \cdot, t \right) \right)$. Therefore, one has
+\begin{equation*}
+    \nabla_{\mathbf{x}}^2 \Phi \left( \mathbf{x}, t \right)
+    = \textsf{diag} \left( \frac{1}{2} \left( x_1 + t^2 \right)^{- \frac{3}{2}}, \frac{1}{2} \left( x_2 + t^2 \right)^{- \frac{3}{2}}, \cdots, \frac{1}{2} \left( x_n + t^2 \right)^{- \frac{3}{2}} \right) \in \mathcal{S}_{++}^{n}
+\end{equation*}
+for every $\mathbf{x} \in \mathbb{R}_{++}^{n} = \textsf{dom} \left( \Phi \left( \cdot, t \right) \right)$. Note that the effective domain of the function $\Phi \left( \cdot, t \right) : \mathbb{R}^n \rightarrow \left( -\infty, +\infty \right]$, $\textsf{dom} \left( \Phi \left( \cdot, t \right) \right) = \mathbb{R}_{++}^n$, is a convex subset of $\mathbb{R}^n$ for every $t \in \mathbb{R}$. So the second-order condition for convexity implies that $\Phi \left( \cdot, t \right) : \mathbb{R}^n \rightarrow \left( -\infty, +\infty \right]$ is a convex function for every $t \in \mathbb{R}$. Hence, their pointwise supremum over $t \in \mathbb{R}$:
+\begin{equation*}
+    f(\cdot) := \sup \left\{ \Phi \left( \cdot, t \right) : t \in \mathbb{R} \right\} : \mathbb{R}^n \rightarrow \left( -\infty, +\infty \right],
+\end{equation*}
+is also a convex function. 
+\medskip
+
+\indent (3) We may observe that
+\begin{equation}
+    \label{eqn3.4}
+    \begin{split}
+        \sup \left\{ - \mathbf{y}^{\top} \mathbf{x} - f(\mathbf{x}) : \mathbf{x} \in \mathbb{R}_{++}^n \right\}
+        &= \sup \left\{ \inf \left\{ - \mathbf{y}^{\top} \mathbf{x} - \Phi \left( \mathbf{x}, t \right) : t \in \mathbb{R} \right\} : \mathbf{x} \in \mathbb{R}_{++}^n \right\}.
+    \end{split}
+\end{equation}
+On the other hand, we know that
+\begin{equation*}
+    \nabla_{\mathbf{x}} \Phi \left( \mathbf{x}, t \right) = - \mathbf{y} + 
+    \begin{bmatrix}
+        \frac{1}{\sqrt{x_1 + t^2}} & \frac{1}{\sqrt{x_2 + t^2}} & \cdots &
+        \frac{1}{\sqrt{x_n + t^2}}
+    \end{bmatrix}^{\top}.
+\end{equation*}
+So we obtain
+\begin{equation*}
+    \argmax \left\{ \Phi \left( \mathbf{x}, t \right) : \mathbf{x} \in \mathbb{R}_{++}^n \right\}
+    = 
+    \begin{cases}
+        \left\{ \mathbf{x}^* (t) \right\} & \textnormal{if } t^2 < \min \left\{ \frac{1}{y_{i}^2} : i \in [n] \right\}; \\
+        \varnothing & \textnormal{otherwise,}
+    \end{cases}
+\end{equation*}
+where $\mathbf{x}^* (t) := \begin{bmatrix} x_{1}^* (t) & x_{2}^* (t) & \cdots & x_{n}^* (t) \end{bmatrix}^{\top} \in \mathbb{R}_{++}^n$ is given by $x_{i}^* (t) := \frac{1}{y_{i}^2} - t^2$ for $i \in [n]$. Thus,
+\begin{equation*}
+    \begin{split}
+        \sup \left\{ - \mathbf{y}^{\top} \mathbf{x} - f(\mathbf{x}) : \mathbf{x} \in \mathbb{R}_{++}^n \right\} &= 
+        \begin{cases}
+            - \mathbf{y}^{\top} \mathbf{x}^* (t) - \Phi \left( \mathbf{x}^* (t), t \right) & \textnormal{if } t^2 < \min \left\{ \frac{1}{y_{i}^2} : i \in [n] \right\}; \\
+            + \infty & \textnormal{otherwise.}
+        \end{cases} \\
+        &= 
+        \begin{cases}
+            \sum_{i=1}^{n} \frac{1}{y_i} - 2t + t^2 \left( \sum_{i=1}^{n} y_i \right)  & \textnormal{if } t^2 < \min \left\{ \frac{1}{y_{i}^2} : i \in [n] \right\}; \\
+            + \infty & \textnormal{otherwise.}
+        \end{cases}
+    \end{split}
+\end{equation*}
+Therefore, we arrive at
+\begin{equation}
+    \label{eqn3.5}
+    \inf \left\{ \sup \left\{ - \mathbf{y}^{\top} \mathbf{x} - f(\mathbf{x}) : \mathbf{x} \in \mathbb{R}_{++}^n \right\} : t \in \mathbb{R} \right\} = \sum_{i=1}^{n} \frac{1}{y_i} - \frac{1}{\sum_{i=1}^{n} y_i} = g(\mathbf{y})
+\end{equation}
+for every $\mathbf{y} \in \mathbb{R}_{++}^n$. At this point, we assume that the following minimax principle holds:
+\begin{equation}
+    \label{eqn3.6}
+    \inf \left\{ \sup \left\{ - \mathbf{y}^{\top} \mathbf{x} - f(\mathbf{x}) : \mathbf{x} \in \mathbb{R}_{++}^n \right\} : t \in \mathbb{R} \right\} = \sup \left\{ \inf \left\{ - \mathbf{y}^{\top} \mathbf{x} - \Phi \left( \mathbf{x}, t \right) : t \in \mathbb{R} \right\} : \mathbf{x} \in \mathbb{R}_{++}^n \right\}.
+\end{equation}
+By taking three pieces \eqref{eqn3.4}, \eqref{eqn3.5}, and \eqref{eqn3.6} collectively, we eventually get
+\begin{equation*}
+    g(\mathbf{y}) = \sup \left\{ - \mathbf{y}^{\top} \mathbf{x} - f(\mathbf{x}) : \mathbf{x} \in \mathbb{R}_{++}^n \right\}.
+\end{equation*}
+Since the function $\mathbf{y} \in \mathbb{R}_{++}^n \mapsto - \mathbf{y}^{\top} \mathbf{x} - f(\mathbf{x}) \in \mathbb{R}$ is an affine function for every $\mathbf{x} \in \mathbb{R}_{++}^n$, $g(\cdot) : \mathbb{R}_{++}^n \rightarrow \mathbb{R}$ is a convex function. However, I still don't know how to prove the proposed minimax principle \eqref{eqn3.6} rigorously..
+}
+\end{problem}
+
+\newpage
+
+\bibliographystyle{plain}
+\bibliography{main.bib}
+
+\end{document}
