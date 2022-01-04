@@ -1,0 +1,476 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.7in]{geometry} 
+\usepackage{amsmath,amsthm,amssymb,amsfonts}
+\usepackage{enumitem}
+\usepackage{dsfont}
+\usepackage{soul}
+\usepackage{mathtools}
+\usepackage[utf8]{inputenc}
+\usepackage{multirow}
+\usepackage[colorlinks]{hyperref}
+\usepackage{cleveref}
+\usepackage{bm}
+\usepackage{tikz-cd}
+\usepackage{adjustbox}
+\usepackage[normalem]{ulem}
+\usepackage{authblk}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{graphicx}
+
+
+\renewcommand{\baselinestretch}{1.25}
+ 
+\newtheorem{lemma}{Lemma}
+\newtheorem{claim}{\sf Claim}
+\newtheorem{defi}{Definition}
+\newtheorem{thm}{Theorem}
+\newtheorem{cor}{Corollary}
+\newtheorem{prop}{Proposition}
+\newtheorem{rmk}{\it Remark}
+\newtheorem{ex}{Example}
+\newtheorem{notation}{Notation}
+\newtheorem{algorithm}{Algorithm}
+\newtheorem{assumption}{Assumption}
+\newtheorem{problem}{Problem}
+
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+  
+\begin{document}
+ 
+\title{MAS374 Optimization Theory\\ Homework \#9}
+\author{20150597 Jeonghwan Lee\footnote{E-mail: \href{mailto:sa8seung@kaist.ac.kr}{\texttt{sa8seung@kaist.ac.kr}}}}
+\affil{Department of Mathematical Sciences, KAIST}
+
+\maketitle
+
+I worked on this programming assignment by using Python 3 (version 3.7.7). I utilized PyCharm 2021.1 Community Edition as an integrated development environment (IDE).
+
+\begin{problem}
+\label{problem1}
+\normalfont{\ \\
+\indent Consider the optimization problem
+\begin{equation}
+    \label{eqn1.1}
+    \begin{split}
+        \min_{\mathbf{y} \in \mathbb{R}^n} \ & \frac{1}{2} \left\| \mathbf{x} - \mathbf{y} \right\|_{2}^2 \\
+        \textnormal{subject to } & \mathbf{A y} \preceq \mathbf{b},
+    \end{split}
+\end{equation}
+where $\mathbf{x} \in \mathbb{R}^n$ is any given fixed point in $\mathbb{R}^n$, and $\mathbf{A} \in \mathbb{R}^{m \times n}$, $\mathbf{b} \in \mathbb{R}^m$. 
+\medskip
+
+\indent (a) The Lagrangian function of the primal convex QP \eqref{eqn1.1} is $\mathcal{L} \left( \cdot, \cdot \right) : \mathbb{R}^n \times \mathbb{R}^m \rightarrow \mathbb{R}$, where
+\begin{equation*}
+    \begin{split}
+        \mathcal{L} \left( \mathbf{y}, \bm{\lambda} \right) &:= \frac{1}{2} \left\| \mathbf{x} - \mathbf{y} \right\|_{2}^2 + \bm{\lambda}^{\top} \left( \mathbf{Ay} - \mathbf{b} \right) \\
+        &= \frac{1}{2} \mathbf{y}^{\top} \mathbf{y} - \left( \mathbf{x} - \mathbf{A}^{\top} \bm{\lambda} \right)^{\top} \mathbf{y} + \frac{1}{2} \mathbf{x}^{\top} \mathbf{x} - \bm{\lambda}^{\top} \mathbf{b}.
+    \end{split}
+\end{equation*}
+Thus we have $\nabla_{\mathbf{y}} \mathcal{L} \left( \mathbf{y}, \bm{\lambda} \right) = \mathbf{y} - \left( \mathbf{x} - \mathbf{A}^{\top} \bm{\lambda} \right)$, which implies that
+\begin{equation}
+    \label{eqn1.2}
+    \argmin \left\{ \mathcal{L} \left( \mathbf{y}, \bm{\lambda} \right) : \mathbf{y} \in \mathbb{R}^n \right\} = \left\{ \mathbf{x} - \mathbf{A}^{\top} \bm{\lambda} \right\}.
+\end{equation}
+Therefore, the Lagrange dual function for \eqref{eqn1.1} is given by $g(\cdot) : \mathbb{R}^m \rightarrow \left[ - \infty, +\infty \right)$, where
+\begin{equation*}
+    \begin{split}
+        g (\bm{\lambda}) &:=
+        \inf \left\{ \mathcal{L} \left( \mathbf{y}, \bm{\lambda} \right) : \mathbf{y} \in \mathbb{R}^n \right\} \\
+        &\stackrel{\textnormal{(a)}}{=} \mathcal{L} \left( \mathbf{x} - \mathbf{A}^{\top} \bm{\lambda}, \bm{\lambda} \right) \\
+        &= - \frac{1}{2} \left( \mathbf{x} - \mathbf{A}^{\top} \bm{\lambda} \right)^{\top} \left( \mathbf{x} - \mathbf{A}^{\top} \bm{\lambda} \right) + \frac{1}{2} \mathbf{x}^{\top} \mathbf{x} - \mathbf{b}^{\top} \bm{\lambda}.
+    \end{split}
+\end{equation*}
+\indent (b) For any non-empty convex \& closed set $\Omega \subseteq \mathbb{R}^n$, let $\mathcal{P}_{\Omega} (\cdot) : \mathbb{R}^n \rightarrow \Omega$ denote the Euclidean projection map of $\mathbb{R}^n$ onto $\Omega$, \emph{i.e.}, $\argmin \left\{ \left\| \mathbf{x} - \mathbf{y} \right\|_2 : \mathbf{y} \in \Omega \right\} = \left\{ \mathcal{P}_{\Omega} (\mathbf{x}) \right\}$ for every $\mathbf{x} \in \mathbb{R}^n$. Here, we highlight that the optimal solution to the optimization problem
+\begin{equation*}
+    \min_{\mathbf{y} \in \Omega} \ \left\| \mathbf{x} - \mathbf{y} \right\|_2
+\end{equation*}
+uniquely exists due to the projection theorem. 
+\medskip
+
+\indent Now, let $\mathbf{y}^* = \mathcal{P}_{\mathcal{X}}(\mathbf{x})$ be the optimal solution to the primal convex QP \eqref{eqn1.1} and $\bm{\lambda}^* \in \mathbb{R}^m$ be the optimal solution to the dual problem associated to \eqref{eqn1.1}:
+\begin{equation}
+    \label{eqn1.3}
+    \begin{split}
+        \max_{\bm{\lambda} \in \mathbb{R}^m} \ & - \frac{1}{2} \left( \mathbf{x} - \mathbf{A}^{\top} \bm{\lambda} \right)^{\top} \left( \mathbf{x} - \mathbf{A}^{\top} \bm{\lambda} \right) + \frac{1}{2} \mathbf{x}^{\top} \mathbf{x} - \mathbf{b}^{\top} \bm{\lambda} \\
+        \textnormal{subject to } & \bm{\lambda} \succeq \mathbf{0}.
+    \end{split}
+\end{equation}
+Here, we recall our assumption that the primal feasible set $\mathcal{X} := \left\{ \mathbf{y} \in \mathbb{R}^n : \mathbf{Ay} \preceq \mathbf{b} \right\} \subseteq \mathbb{R}^n$ has a non-empty relative interior. Let $\tilde{\mathbf{y}} \in \textsf{relint}(\mathcal{X})$. Since $\tilde{\mathbf{y}}$ is clearly a strictly feasible point of the primal convex QP \eqref{eqn1.1}, the Slater's condition for convex optimization problems (\emph{Proposition 8.7} in \cite{calafiore2014optimization}) implies the strong duality between the primal problem \eqref{eqn1.1} and the corresponding dual problem \eqref{eqn1.3}. Hence, the Karush-Kuhn-Tucker (KKT) conditions for the pair $\left( \mathbf{y}^*, \bm{\lambda}^* \right)$ hold:
+\begin{enumerate} [label=(\roman*)]
+    \item Lagrangian stationarity: $\nabla_{\mathbf{y}} \mathcal{L} \left( \mathbf{y}^*, \bm{\lambda}^* \right) = \mathbf{0}$;
+    \item Complementary slackness: $\left( \bm{\lambda}^* \right)^{\top} \left( \mathbf{A} \mathbf{y}^* - \mathbf{b} \right) = 0$;
+    \item Primal feasibility: $\mathbf{A} \mathbf{y}^* \preceq \mathbf{b}$;
+    \item Dual feasibility: $\bm{\lambda}^* \succeq \mathbf{0}$.
+\end{enumerate}
+The condition (\romannumeral 1) yields
+\begin{equation*}
+    \mathbf{y}^* - \left( \mathbf{x} - \mathbf{A}^{\top} \bm{\lambda}^* \right) = \mathbf{0} \in \mathbb{R}^n,
+\end{equation*}
+thereby we have
+\begin{equation}
+    \label{eqn1.4}
+    \mathbf{y}^* = \mathcal{P}_{\mathcal{X}}(\mathbf{x}) = \mathbf{x} - \mathbf{A}^{\top} \bm{\lambda}^*.
+\end{equation}
+At this point, one can ask the following natural question: Does $\mathbf{x} - \mathbf{A}^{\top} \bm{\lambda}^*$ really belong to the primal feasible set $\mathcal{X}$? This question can be settled by performing Lagrangian duality analysis of the dual problem \eqref{eqn1.3}. The Lagrangian function $\mathcal{L}_d \left( \cdot, \cdot \right) : \mathbb{R}^m \times \mathbb{R}^m \rightarrow \mathbb{R}$ is given by
+\begin{equation*}
+    \mathcal{L}_d \left( \bm{\lambda}, \bm{\nu} \right)
+    = \frac{1}{2} \left( \mathbf{x} - \mathbf{A}^{\top} \bm{\lambda} \right)^{\top} \left( \mathbf{x} - \mathbf{A}^{\top} \bm{\lambda} \right) - \frac{1}{2} \mathbf{x}^{\top} \mathbf{x} + \mathbf{b}^{\top} \bm{\lambda} - \bm{\nu}^{\top} \bm{\lambda}.
+\end{equation*}
+Let $\bm{\nu}^* \in \mathbb{R}^m$ be an optimal solution to the dual formulation of the dual problem \eqref{eqn1.3}. Since the strong duality for the dual problem \eqref{eqn1.3} clearly holds due to the the Slater's condition for convex programs (\emph{Proposition 8.7} in \cite{calafiore2014optimization}), the Karush-Kuhn-Tucker (KKT) conditions for the pair $\left( \bm{\lambda}^*, \bm{\nu}^* \right)$ hold:
+\begin{enumerate} [label=(\roman*)]
+    \setcounter{enumi}{4}
+    \item Lagrangian stationarity: $\nabla_{\bm{\lambda}} \mathcal{L}_d \left( \bm{\lambda}^*, \bm{\nu}^* \right) = \mathbf{0}$;
+    \item Complementary slackness: $\left( \bm{\nu}^* \right)^{\top} \bm{\lambda}^* = 0$;
+    \item Primal feasibility: $\bm{\lambda}^* \succeq \mathbf{0}$;
+    \item Dual feasibility: $\bm{\nu}^* \succeq \mathbf{0}$.
+\end{enumerate}
+From the condition (\romannumeral 5), we obtain
+\begin{equation}
+    \label{eqn1.5}
+    \mathbf{0} = \nabla_{\bm{\lambda}} \mathcal{L}_d \left( \bm{\lambda}^*, \bm{\nu}^* \right) = \left( \mathbf{A} \mathbf{A}^{\top} \right) \bm{\lambda}^* - \left( \mathbf{Ax} - \mathbf{b} + \bm{\nu}^* \right).
+\end{equation}
+It follows that
+\begin{equation*}
+    \mathbf{A} \left( \mathbf{x} - \mathbf{A}^{\top} \bm{\lambda}^* \right) 
+    \stackrel{\textnormal{(b)}}{=} \mathbf{Ax} - \left( \mathbf{Ax} - \mathbf{b} + \bm{\nu}^* \right)
+    = \mathbf{b} - \bm{\nu}^* 
+    \stackrel{\textnormal{(c)}}{\preceq} \mathbf{b},
+\end{equation*}
+where the step (b) follows from the equation \eqref{eqn1.5}, and the step (c) holds due to the condition (\romannumeral 8), thereby $\mathbf{x} - \mathbf{A}^{\top} \bm{\lambda}^* \in \mathcal{X}$ as desired.
+}
+\end{problem}
+
+\begin{problem}
+\label{problem2}
+\normalfont{\ \\
+\indent (a) The next code defines a function \texttt{dual\_proj(l)} which takes a vector $\texttt{l} \in \mathbb{R}^m$ and returns its projection $\mathcal{P}_{\bm{\Lambda}}(\texttt{l}) = \left[ \texttt{l} \right]_{\bm{\Lambda}}$ onto the dual feasible set $\bm{\Lambda} := \mathbb{R}_{+}^m$:
+
+\begin{lstlisting}[language = Python]
+import numpy as np
+
+#### ---- Problem 2(a) ---- ####
+
+def dual_proj(l):
+    dim = l.shape[0]
+    proj_l = np.zeros(dim)
+    for i in range(dim):
+        if l[i] >= 0:
+            proj_l[i] = l[i]
+        else:
+            proj_l[i] = 0
+    return proj_l
+
+\end{lstlisting}
+Here, we note that for every $\bm{\lambda} \in \mathbb{R}^m$,
+\begin{equation*}
+    \left[ \mathcal{P}_{\bm{\Lambda}} (\bm{\lambda}) \right]_{i} = \lambda_{i}^{+} = \max \left\{ \lambda_i, 0 \right\},\ \forall i \in [m].
+\end{equation*}
+\indent (b) The next code defines a function \texttt{dual\_grad(l, x, A, b)} which takes a vector $\texttt{l} \in \mathbb{R}^m$ and returns $- \nabla_{\bm{\lambda}} g (\texttt{l}) \in \mathbb{R}^m$:
+\begin{lstlisting}[language = Python]
+import numpy as np
+
+#### ---- Problem 2(b) ---- ####
+
+def dual_grad(l, x, A, b):
+    grad = np.dot(np.dot(A, np.transpose(A)), l) - (np.dot(A, x) - b)
+    return grad
+\end{lstlisting}
+Here, we note that
+\begin{equation}
+    \label{eqn2.1}
+    - \nabla_{\bm{\lambda}} g (\bm{\lambda}) = \left( \mathbf{A} \mathbf{A}^{\top} \right) \bm{\lambda} - \left( \mathbf{A x} - \mathbf{b} \right),\ \forall \bm{\lambda} \in \mathbb{R}^m.
+\end{equation}
+\indent (c) One can observe from \eqref{eqn2.1} that
+\begin{equation*}
+    \begin{split}
+        - \nabla_{\bm{\lambda}} g ( \mathbf{v} ) + \nabla_{\bm{\lambda}} g ( \mathbf{u} )
+        &= \left( \mathbf{AA}^{\top} \right) \left( \mathbf{v} - \mathbf{u} \right),\ \forall \mathbf{u}, \mathbf{v} \in \mathbb{R}^m,
+    \end{split}
+\end{equation*}
+thereby we obtain
+\begin{equation}
+    \label{eqn2.2}
+    \begin{split}
+        \left\| - \nabla_{\bm{\lambda}} g ( \mathbf{v} ) + \nabla_{\bm{\lambda}} g ( \mathbf{u} ) \right\|_{2}
+        = \left\| \left( \mathbf{AA}^{\top} \right) \left( \mathbf{v} - \mathbf{u} \right) \right\|_{2}
+        \leq \left\| \mathbf{AA}^{\top} \right\|_{2 \to 2} \cdot \left\| \mathbf{v} - \mathbf{u} \right\|_2,\ \forall \mathbf{u}, \mathbf{v} \in \mathbb{R}^m.
+    \end{split}
+\end{equation}
+From the inequality \eqref{eqn2.2}, one can conclude that the function $-g (\cdot) : \mathbb{R}^m \rightarrow \mathbb{R}$ is $L$-smooth, \emph{i.e.}, $-g (\cdot) : \mathbb{R}^m \rightarrow \mathbb{R}$ has a $L$-Lipschitz continuous gradient with the Lipschitz constant
+\begin{equation*}
+    L := \left\| \mathbf{A} \mathbf{A}^{\top} \right\|_{2 \to 2} = \lambda_{\max} \left( \mathbf{A} \mathbf{A}^{\top} \right) = \sigma_{\max} (\mathbf{A})^2.
+\end{equation*}
+\indent Lastly, we delineate the projected gradient method for solving the dual problem \eqref{eqn1.3}. With initialization step $\bm{\lambda}_0 := \mathbf{0} \in \bm{\Lambda}$, we perform the iterative procedure with the following update rule:
+\begin{equation}
+    \label{eqn2.3}
+    \bm{\lambda}_{k+1} = \mathcal{P}_{\bm{\Lambda}} \left( \bm{\lambda}_k - s_k \left\{ - \nabla_{\bm{\lambda}} g \left( \bm{\lambda}_k \right) \right\} \right),\ \forall k \in \mathbb{Z}_{+},
+\end{equation}
+with the constant step-size $s_k = \frac{1}{L} = \sigma_{\max} \left( \mathbf{A} \right)^{-2}$. Note that the stopping criterion is
+\begin{equation*}
+    \left\| \left( \mathbf{x} - \mathbf{A}^{\top} \bm{\lambda}_k \right) - \left( \mathbf{x} - \mathbf{A}^{\top} \bm{\lambda}_{k+1} \right) \right\|_{2} = \left\| \mathbf{A}^{\top} \left( \bm{\lambda}_{k+1} - \bm{\lambda}_k \right) \right\|_2 \leq \texttt{tol},
+\end{equation*}
+where $\texttt{tol} := 2^{-40}$. The next code defines a function \texttt{solve\_dual(x, A, b)} which makes use of the projected gradient method \eqref{eqn2.3} to solve the dual problem \eqref{eqn1.3} within an accuracy $\texttt{tol} := 2^{-40}$ and returns the computed optimal solution $\bm{\lambda}^* \in \bm{\Lambda}$:
+\begin{lstlisting}[language = Python]
+import numpy as np
+import math
+
+#### ---- Problem 2(c) ---- ####
+
+def solve_dual(x, A, b):
+    tol = 2 ** -40
+    dim = A.shape[0]
+    u, s, vh = np.linalg.svd(A, full_matrices=True)
+    L1 = s[0] ** 2
+    learning_rate = 1/L1
+    next_itr = np.zeros(dim)
+    distance = math.inf
+    while distance > tol:
+        current_itr = next_itr
+        next_itr = dual_proj(current_itr - (learning_rate * dual_grad(current_itr, x, A, b)))
+        distance = np.linalg.norm(np.dot(np.transpose(A), next_itr) - np.dot(np.transpose(A), current_itr), 2)
+    return next_itr
+\end{lstlisting}
+}
+\end{problem}
+
+\begin{problem}
+\label{problem3}
+\normalfont{\ \\
+\indent (a) From the equation \eqref{eqn1.4}, we know that for every $\mathbf{x} \in \mathbb{R}^n$,
+\begin{equation*}
+    \mathcal{P}_{\mathcal{X}}(\mathbf{x}) = \left[ \mathbf{x} \right]_{\mathcal{X}} = \mathbf{x} - \mathbf{A}^{\top} \bm{\lambda}^*,
+\end{equation*}
+where $\bm{\lambda}^* \in \mathbb{R}^m$ is the optimal solution to the dual problem \eqref{eqn1.3}. So the source code defining the function \texttt{primal\_proj(x, A, b)} can be written as follows:
+
+\begin{lstlisting}[language = Python]
+import numpy as np
+
+#### ---- Problem 3(a) ---- ####
+
+def prim_proj(x, A, b):
+    dual_opt = solve_dual(x, A, b)
+    return x - np.dot(np.transpose(A),dual_opt)
+\end{lstlisting}
+
+\indent (b) Note that $\nabla_{\mathbf{x}} f_0 (\mathbf{x}) = \mathbf{Hx} + \mathbf{c}$ for every $\mathbf{x} \in \mathbb{R}^n$. Therefore, the source code defining two functions \texttt{grad\_f0(x, H, c)} and \texttt{f0(x, H, c)} which evaluate the value of $\nabla_{\mathbf{x}} f_0 (\mathbf{x}) \in \mathbb{R}^n$ and $f_0 (\mathbf{x}) \in \mathbb{R}$, respectively:
+
+\begin{lstlisting}[language = Python]
+import numpy as np
+
+#### ---- Problem 3(b) ---- ####
+
+def grad_f0(x, H, c):
+    return np.dot(H, x) + c
+
+def f0(x, H, c):
+    return 1/2 * np.dot(np.transpose(x), np.dot(H, x)) + np.dot(np.transpose(c), x)
+\end{lstlisting}
+
+\indent (c) It's clear that
+\begin{equation}
+    \label{eqn3.1}
+    \left\| \nabla_{\mathbf{x}} f_0 (\mathbf{v}) - \nabla_{\mathbf{x}} f_0 (\mathbf{u}) \right\|_{2} 
+    = \left\| \mathbf{H} \left( \mathbf{v} - \mathbf{u} \right) \right\|_2
+    \leq \left\| \mathbf{H} \right\|_{2 \to 2} \cdot \left\| \mathbf{v} - \mathbf{u} \right\|_2,\ \forall \mathbf{u}, \mathbf{v} \in \mathbb{R}^n.
+\end{equation}
+From the inequality \eqref{eqn3.1}, one can conclude that the function $f_0 (\cdot) : \mathbb{R}^n \rightarrow \mathbb{R}$ is $L$-smooth, \emph{i.e.}, $f_0 (\cdot) : \mathbb{R}^n \rightarrow \mathbb{R}$ has a $L$-Lipschitz continuous gradient with the Lipschitz constant
+\begin{equation*}
+    L := \left\| \mathbf{H} \right\|_{2 \to 2} = \lambda_{\max} ( \mathbf{H} ).
+\end{equation*}
+\indent Finally, we take a closer inspection on the projected gradient method for solving our original QP:
+\begin{equation}
+    \label{eqn3.2}
+    \begin{split}
+        p^* = \min_{\mathbf{x} \in \mathbb{R}^n} \ & f_0 (\mathbf{x}) = \frac{1}{2} \mathbf{x}^{\top} \mathbf{H} \mathbf{x} + \mathbf{c}^{\top} \mathbf{x} \\
+        \textnormal{subject to } & \mathbf{Ax} \preceq \mathbf{b}.
+    \end{split}
+\end{equation}
+\noindent With initialization step $\mathbf{x}_0 := \mathbf{0} \in \mathbb{R}^n$, we perform the iterative procedure with the following update rule:
+\begin{equation}
+    \label{eqn3.3}
+    \mathbf{x}_{k+1} = \mathcal{P}_{\mathcal{X}} \left( \mathbf{x}_k - s_k \nabla_{\mathbf{x}} f_0 \left( \mathbf{x}_k \right) \right),\ \forall k \in \mathbb{Z}_{+},
+\end{equation}
+with the constant step-size $s_k = \frac{1}{L} = \lambda_{\max} (\mathbf{H})^{-1}$. The next source code defines a function \texttt{solve\_dual(H, c, A, b)} which utilizes the projected gradient method \eqref{eqn3.3} to solve the original QP \eqref{eqn3.2} within an accuracy $\texttt{eps} := 2^{-40}$ and returns the computed optimal solution $\mathbf{x}^* \in \mathcal{X}$:
+
+\begin{lstlisting}[language = Python]
+import numpy as np
+import math
+
+#### ---- Problem 3(c) ---- ####
+
+def solve_prim(H, c, A, b):
+    eps = 2 ** -40
+    dim = H.shape[0]
+    u, s, vh = np.linalg.svd(H, full_matrices=True)
+    L2 = s[0]
+    learning_rate = 1/L2
+    next_itr = np.zeros(dim)
+    distance = math.inf
+    while distance > eps:
+        current_itr = next_itr
+        next_itr = prim_proj(current_itr - (learning_rate * grad_f0(current_itr, H, c)), A, b)
+        distance = np.linalg.norm(next_itr - current_itr, 2)
+    return next_itr
+
+x_opt = solve_prim(H, c, A, b)
+
+# printing the results
+print_results(x_opt, H, c)
+\end{lstlisting}
+
+\indent At this point, we clarify the reason why the projected gradient method \eqref{eqn3.3} works well with initialization $\mathbf{x}_0 = \mathbf{0} \in \mathbb{R}^n$, even though $\mathbf{0} \in \mathbb{R}^n$ might not be in the primal feasible set $\mathcal{X} \subseteq \mathbb{R}^n$. Note that the projected gradient method \eqref{eqn3.3} with initialization $\mathbf{x}_0 = \mathbf{0}$ is essentially the same with the projected gradient method \eqref{eqn3.3} with initialization $\mathbf{x}_1 = \mathcal{P}_{\mathcal{X}} \left( - \frac{1}{\lambda_{\max} (\mathbf{H})} \mathbf{c} \right) \in \mathcal{X}$. Since $\mathbf{H} \in \mathcal{S}_{++}^n$, where $\mathcal{S}_{++}^n$ denotes the set of all $n \times n$ real symmetric, positive definite matrices, it holds that
+\begin{equation}
+    \label{eqn3.4}
+    \lambda_{\min} (\mathbf{H}) \cdot \mathbf{I}_n \preceq \mathbf{H} = \nabla_{\mathbf{x}}^2 f_0 (\mathbf{x}) \preceq \lambda_{\max} (\mathbf{H}) \cdot \mathbf{I}_n,\ \forall \mathbf{x} \in \mathbb{R}^n.
+\end{equation}
+From \eqref{eqn3.4}, one can see that the objective function $f_0(\cdot) : \mathbb{R}^n \rightarrow \mathbb{R}$ is a $\lambda_{\min} (\mathbf{H})$-strongly convex and $\lambda_{\max} (\mathbf{H})$-smooth function. Therefore, $f_0(\cdot) : \mathbb{R}^n \rightarrow \mathbb{R}$ is $\lambda_{\min} (\mathbf{H})$-strongly convex and $\lambda_{\max} (\mathbf{H})$-smooth on the \emph{primal feasible set} $\mathcal{X} \subseteq \mathbb{R}^n$ as well. According to \emph{Theorem 3.10} in \cite{bubeck2015optimization}, the iterative procedure \eqref{eqn3.3} of the projected gradient method with initialization $\mathbf{x}_1 = \mathcal{P}_{\mathcal{X}} \left( - \frac{1}{\lambda_{\max} (\mathbf{H})} \mathbf{c} \right) \in \mathcal{X}$ for solving the original QP \eqref{eqn3.2} satisfies
+\begin{equation}
+    \label{eqn3.5}
+    \left\| \mathbf{x}_k - \mathbf{x}^* \right\|_{2}^2 \leq \exp \left\{ - \frac{k-1}{\kappa (\mathbf{H})} \right\} \left\| \mathbf{x}_1 - \mathbf{x}^* \right\|_{2}^2,\ \forall k \in \mathbb{N},
+\end{equation}
+where $\kappa (\mathbf{H}) := \frac{\lambda_{\max} (\mathbf{H})}{\lambda_{\min} (\mathbf{H})} \in \left[ 1, +\infty \right)$ is the \emph{condition number} of $\mathbf{H}$ (or the \emph{condition number} of $f_0(\cdot) : \mathbb{R}^n \rightarrow \mathbb{R}$). From the bound \eqref{eqn3.5}, the projected gradient method \eqref{eqn3.3} with initialization $\mathbf{x}_1 = \mathcal{P}_{\mathcal{X}} \left( - \frac{1}{\lambda_{\max} (\mathbf{H})} \mathbf{c} \right)$ achieves the target accuracy $\left\| \mathbf{x}_k - \mathbf{x}^* \right\|_2 \leq \epsilon$ for some $\epsilon \in \left( 0, +\infty \right)$ in at most $2 \kappa (\mathbf{H}) \log \left( \frac{\left\| \mathbf{x}_1 - \mathbf{x}^* \right\|_2}{\epsilon} \right) = \mathcal{O} \left( \kappa (\mathbf{H}) \log \left( \frac{1}{\epsilon} \right) \right)$ iterations. In a nutshell, the projected gradient method \eqref{eqn3.3} with initialization $\mathbf{x}_0 = \mathbf{0}$ achieves a \emph{linear rate of convergence} and this is the reason why the projected gradient method \eqref{eqn3.3} with initialization $\mathbf{x}_0 = \mathbf{0} \in \mathbb{R}^n$ works well with initialization $\mathbf{x}_0 = \mathbf{0}$, even though $\mathbf{0} \in \mathbb{R}^n$ might not be in the primal feasible set $\mathcal{X} \subseteq \mathbb{R}^n$.
+\medskip
+
+\indent To sum up, the overall source code for this programming assignment is given as follows:
+
+\begin{lstlisting}[language = Python]
+import numpy as np
+import math
+
+#### ---- Problem 2(a) ---- ####
+
+def dual_proj(l):
+    dim = l.shape[0]
+    proj_l = np.zeros(dim)
+    for i in range(dim):
+        if l[i] >= 0:
+            proj_l[i] = l[i]
+        else:
+            proj_l[i] = 0
+    return proj_l
+
+#### ---- Problem 2(b) ---- ####
+
+def dual_grad(l, x, A, b):
+    grad = np.dot(np.dot(A, np.transpose(A)), l) - (np.dot(A, x) - b)
+    return grad
+
+
+#### ---- Problem 2(c) ---- ####
+
+def solve_dual(x, A, b):
+    tol = 2 ** -40
+    dim = A.shape[0]
+    u, s, vh = np.linalg.svd(A, full_matrices=True)
+    L1 = s[0] ** 2
+    learning_rate = 1/L1
+    next_itr = np.zeros(dim)
+    distance = math.inf
+    while distance > tol:
+        current_itr = next_itr
+        next_itr = dual_proj(current_itr - (learning_rate * dual_grad(current_itr, x, A, b)))
+        distance = np.linalg.norm(np.dot(np.transpose(A), next_itr) - np.dot(np.transpose(A), current_itr), 2)
+    return next_itr
+
+
+#### ---- Problem 3(a) ---- ####
+
+def prim_proj(x, A, b):
+    dual_opt = solve_dual(x, A, b)
+    return x - np.dot(np.transpose(A),dual_opt)
+
+
+#### ---- Problem 3(b) ---- ####
+
+def grad_f0(x, H, c):
+    return np.dot(H, x) + c
+
+def f0(x, H, c):
+    return 1/2 * np.dot(np.transpose(x), np.dot(H, x)) + np.dot(np.transpose(c), x)
+
+
+#### --  A helper function which prints the results in a given format -- ####
+
+def print_results(x_opt, H, c):
+    np.set_printoptions(floatmode="unique")  # print with full precision
+    print("optimal value p* =")
+    print("", f0(x_opt, H, c), sep="\t")
+    print("\noptimal solution x* =")
+    for coord in x_opt:
+        print("", coord, sep='\t')
+    return
+
+# first example in page 3 of the document,
+# written for you so you can test your code.
+
+H = np.array([[6, 4],
+              [4, 14]])
+c = np.array([-1, -19])
+
+A = np.array([[-3, 2],
+              [-2, -1],
+              [1, 0]])
+b = np.array([-2, 0, 4])
+
+#### ---- Problem 3(c) ---- ####
+
+def solve_prim(H, c, A, b):
+    eps = 2 ** -40
+    dim = H.shape[0]
+    u, s, vh = np.linalg.svd(H, full_matrices=True)
+    L2 = s[0]
+    learning_rate = 1/L2
+    next_itr = np.zeros(dim)
+    distance = math.inf
+    while distance > eps:
+        current_itr = next_itr
+        next_itr = prim_proj(current_itr - (learning_rate * grad_f0(current_itr, H, c)), A, b)
+        distance = np.linalg.norm(next_itr - current_itr, 2)
+    return next_itr
+
+x_opt = solve_prim(H, c, A, b)
+
+# printing the results
+print_results(x_opt, H, c)
+\end{lstlisting}
+}
+\end{problem}
+
+
+\newpage
+
+\appendix
+
+
+\bibliographystyle{plain}
+\bibliography{main.bib}
+
+\end{document}
